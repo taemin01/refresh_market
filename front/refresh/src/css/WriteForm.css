@@ -1,0 +1,68 @@
+.write-form {
+  max-width: 600px;
+  margin: 0 auto; /* 폼을 중앙에 정렬 */
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  margin-top: 10px;
+}
+
+.write-form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.write-form form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 양쪽 끝 대신 왼쪽 정렬 */
+}
+
+label {
+  flex: 0 0 100px; /* 고정된 너비를 설정해서 모든 레이블의 크기를 동일하게 */
+  text-align: right; /* 레이블을 오른쪽 정렬 */
+  margin-right: 10px;
+}
+
+input,
+select,
+textarea {
+  flex: 1; /* 입력 필드가 남은 공간을 차지 */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+.image-preview img {
+  max-width: 100px;
+  margin-top: 10px;
+  border-radius: 5px;
+  display: block;
+  margin-left: auto; /* 미리보기 이미지 중앙 정렬 */
+  margin-right: auto;
+}

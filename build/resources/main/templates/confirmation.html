@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Confirmation</title>
+</head>
+<body>
+<!-- 수정 사항: 확인 페이지에서 products 리스트 사용 -->
+<h1>Product Registered Successfully!</h1>
+<ul>
+    <li th:each="product : ${products}">
+        <p>Product Name: <span th:text="${product.name}"></span></p>
+        <p>Description: <span th:text="${product.description}"></span></p>
+        <p>Price: <span th:text="${product.price}"></span></p>
+    </li>
+</ul>
+
+</body>
+</html>

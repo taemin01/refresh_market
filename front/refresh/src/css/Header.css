@@ -1,0 +1,47 @@
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 5%; /* 좌우에 5% 여백 추가 */
+  background-color: #fff;
+  border-bottom: 1px solid #ddd;
+  height: 40px;
+}
+
+.header img {
+  width: 150px;
+  height: auto;
+}
+
+.search-bar {
+  width: 90%;
+  max-width: 320px;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 15px;
+  background-color: #f7f7f7;
+  font-size: 15px;
+  margin-top: 7px;
+  margin-left: 5px;
+}
+
+nav {
+  display: flex; /* 버튼들을 가로로 나열 */
+  align-items: center; /* 수직 정렬 */
+}
+
+.nav-btn {
+  margin-left: 10px;
+  padding: 8px 16px;
+  color: #000;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.nav-btn:hover {
+  text-decoration: underline;
+  background: none;
+}

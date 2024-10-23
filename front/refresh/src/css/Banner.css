@@ -1,0 +1,15 @@
+.banner {
+  background-color: #fafafa;
+  padding: 10px 5%; /* 상하 10px, 좌우 5% 여백 */
+  text-align: center;
+  width: 90%; /* 배너 너비를 화면의 90%로 제한 */
+  margin: 0 auto; /* 가운데 정렬 */
+  height: auto; /* 높이 자동 조정 */
+  border-radius: 15px; /* 부드러운 모서리 추가 */
+}
+
+.banner img {
+  max-width: 100%;
+  height: auto;
+  max-height: 250px; /* 이미지 최대 높이 조절 */
+}

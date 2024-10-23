@@ -1,0 +1,36 @@
+.product-item {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 200px; /* 카드 너비 줄이기 */
+  height: auto; /* 높이 자동 조정 */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start; /* 변경된 부분 */
+  margin: 0; /* 카드 간의 마진 없애기 */
+  background-color: #fff;
+}
+
+
+.product-image {
+  width: 100%; /* 100% 너비로 설정 */
+  height: auto; /* 높이를 자동으로 조정 */
+  max-height: 140px; /* 최대 높이 설정 */
+  object-fit: cover; /* 비율 유지하며 잘라내기 */
+  border-radius: 8px; /* 둥근 모서리 */
+}
+
+.product-name {
+  text-align: center;
+  margin: 5px 0; /* 위아래 간격 조정 */
+  font-size: 1.2em; /* 텍스트 크기 조정 */
+}
+
+.product-price {
+  text-align: center;
+  margin: 5px 0; /* 위아래 간격 조정 */
+  font-size: 1em; /* 텍스트 크기 조정 */
+}

@@ -1,0 +1,23 @@
+.product-list {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 30px; /* 카드 간격 조정 */
+  padding: 5px 5;
+  margin: 15px auto;
+  max-width: 1000px; /* 최대 너비 제한 */
+  box-sizing: border-box;
+}
+
+.product-header {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 80%; /* 화면 너비 90%로 제한 */
+  margin: 5px auto;
+  padding-left: 12%; /* 왼쪽 여백 */
+}
+
+.product-header h2 {
+  margin: 10px 0;
+  font-size: 1.2rem;
+}
