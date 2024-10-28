@@ -18,12 +18,6 @@ public class User {
     private String user_name;
 
     @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private String email;
-
-    @Column(nullable = false)
     private float location_x;
 
     @Column(nullable = false)
@@ -35,4 +29,11 @@ public class User {
     //한 유저가 여러 물건을 가질 수 있음
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
+
+    //지운 column
+    //@Column(nullable = false)
+    //private String password;
+
+    //@Column(nullable = false)
+    //private String email;
 }

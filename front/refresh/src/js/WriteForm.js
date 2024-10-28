@@ -4,98 +4,137 @@ import imageAdd from '../image/imageAdd.jpg'; // 기본 이미지
 
 function WriteForm() {
   const [formData, setFormData] = useState({
-    itemName: '',
+    title: '',
     category: '',
     price: '',
     description: '',
-    condition: 'new', // 초기값 'new'
     image: null,
+    userId : 1 //기본 userId로 설정 -임의로해둠-
   });
 
   const [imagePreview, setImagePreview] = useState(imageAdd); // 이미지 미리보기 상태
+  const [descriptionLength, setDescriptionLength] = useState(0); // 설명 글자 수 상태
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'image') {
+
+    if (name === 'description') {
+      if (value.length <= 1000) {
+        setFormData({ ...formData, [name]: value });
+        setDescriptionLength(value.length); // 글자 수 업데이트
+      }
+    } else if (name === 'image') {
       const file = files[0];
       if (file) {
         setFormData({ ...formData, [name]: file });
-        // 선택한 이미지 파일의 URL을 생성하여 미리보기 설정
-        setImagePreview(URL.createObjectURL(file));
+        setImagePreview(URL.createObjectURL(file)); // 이미지 미리보기 설정
       }
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // 여기서 서버에 폼 데이터를 전송하거나 다른 작업 수행
-    console.log('Form submitted:', formData);
+  const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      const postData = new FormData(); // FormData 객체 생성
+      postData.append('title', formData.title); // 제목 추가
+      postData.append('category_id', formData.category); // 카테고리 ID 추가
+      postData.append('user_id', 1); // userId가 없을 경우 1로 설정
+      postData.append('price', formData.price); // 가격 추가
+      postData.append('description', formData.description); // 설명 추가
+      postData.append('status', 'a'.charAt(0)); // 상태 추가
+      postData.append('image', formData.image); // 이미지 파일 추가
+
+      try {
+          const response = await fetch('http://localhost:8080/product/regist', {
+              method: 'POST',
+              body: postData, // FormData 객체를 body로 전달
+          });
+
+          if (!response.ok) {
+              throw new Error('Failed to submit');
+          }
+
+          const result = await response.json();
+          console.log('Form submitted:', result);
+      } catch (error) {
+          console.error('Error submitting form:', error);
+      }
   };
+
+
 
   return (
     <div className="write-form">
-      <h2>상품 정보를 등록해요</h2>
+      <h2>
+        새로고침님,<br />
+        물품 정보를 등록해주세요!
+      </h2>
+      <hr /><br />
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="itemName">상품명:</label>
+          <label htmlFor="title">상품명</label>
           <input
             type="text"
-            id="itemName"
-            name="itemName"
-            value={formData.itemName}
+            id="title"
+            name="title"
+            value={formData.title}
             onChange={handleChange}
-            placeholder="상품명을 입력하세요"
+            placeholder="최대 50자까지 입력 가능해요."
             required
           />
         </div>
 
-        <div className="form-group">
-          <label htmlFor="category">카테고리:</label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            required
-          >
-            <option value="">카테고리를 선택하세요</option>
-            <option value="electronics">의류</option>
-            <option value="furniture">가구</option>
-            <option value="books">도서</option>
-            <option value="clothes">전자기기</option>
-          </select>
+        <div className="form-inline">
+          <div className="form-group">
+            <label htmlFor="category">카테고리</label>
+            <select
+              id="category"
+              name="category"
+              value={formData.category}
+              onChange={handleChange}
+              required
+            >
+              <option value="">카테고리를 선택해요</option>
+              <option value="1">의류</option>
+              <option value="2">가구</option>
+              <option value="3">도서</option>
+              <option value="4">전자기기</option>
+            </select>
+          </div>
+
+          <div className="form-group">
+            <label htmlFor="price">가격</label>
+            <input
+              type="number" // 가격은 숫자로 입력 받는 것이 더 적합
+              id="price"
+              name="price"
+              value={formData.price}
+              onChange={handleChange}
+              placeholder="가격을 결정해요."
+              required
+            />
+          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="price">가격:</label>
-          <input
-            type="text"
-            id="price"
-            name="price"
-            value={formData.price}
-            onChange={handleChange}
-            placeholder="가격을 입력하세요"
-            required
-          />
+          <label htmlFor="description">물품 설명</label>
+          <div className="textarea-container"> {/* textarea를 감싸는 컨테이너 */}
+            <textarea
+              id="description"
+              name="description"
+              value={formData.description}
+              onChange={handleChange}
+              placeholder={`최대 1000자까지 입력 가능해요.\n물품에 관한 정보를 자세히 기술해주세요!`}
+              required
+            />
+            <p className="char-count">{descriptionLength}/1000 자</p> {/* 글자 수 표시 */}
+          </div>
         </div>
 
         <div className="form-group">
-          <label htmlFor="explain">물품 설명:</label>
-          <textarea
-            id="explain"
-            name="explain"
-            value={formData.explain} // price -> explain 수정
-            onChange={handleChange}
-            placeholder="상품에 대한 정보를 알려주세요"
-            required
-          />
-        </div>
-
-
-        <div className="form-group">
-          <label htmlFor="image">이미지 업로드:</label>
+          <label htmlFor="image">이미지</label>
           <input
             type="file"
             id="image"
@@ -105,12 +144,10 @@ function WriteForm() {
           />
         </div>
 
-        {/* 선택한 이미지 미리보기 */}
         <div className="image-preview">
           <img src={imagePreview} alt="Selected Preview" />
         </div>
 
-        {/* 등록 버튼 */}
         <button type="submit">등록</button>
       </form>
     </div>

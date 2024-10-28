@@ -17,14 +17,14 @@ public class Product {
     private Integer product_id;
 
     //여러 물건을 한 사람이 판매할 수 있음
-    @ManyToOne
+    @ManyToOne(optional = false) // 사용자 필드는 필수
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    //??????????????
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @ManyToOne(optional = true) // 카테고리가 선택적임을 명시
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
+
 
     @Column(nullable = false)
     private String title;
@@ -36,7 +36,7 @@ public class Product {
     private String description;
 
     @Column(nullable = false)
-    private char status; // 0: 판매중, 1: 예약중, 2: 판매완료
+    private char status; // a: 판매중, b: 예약중, c: 판매완료
 
     @Column(nullable = false)
     private String image;
@@ -51,14 +51,14 @@ public class Product {
 
     //status
     public boolean isAvailable() {
-        return status == '0'; // 판매중인 경우
+        return status == 'a'; // 판매중인 경우
     }
 
     public boolean isReserved() {
-        return status == '1'; // 예약중인 경우
+        return status == 'b'; // 예약중인 경우
     }
 
     public boolean isSold() {
-        return status == '2'; // 판매완료인 경우
+        return status == 'c'; // 판매완료인 경우
     }
 }

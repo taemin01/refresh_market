@@ -12,4 +12,8 @@ public class Category {
 
     @Column(nullable = false)
     private String category_name;
+
+    public Integer getCategoryId() {
+        return category_id;
+    }
 }
