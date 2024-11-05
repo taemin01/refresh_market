@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RegistService {
@@ -21,7 +22,14 @@ public class RegistService {
         return registRepository.findAll();
     }
 
-    public void registDelete(Integer id) {
+    public void delete(Integer id) {
         registRepository.deleteById(id);
     }
+
+    public Optional<Product> findById(Integer productId) {
+        return registRepository.findById(productId);
+    }
+
+
+
 }

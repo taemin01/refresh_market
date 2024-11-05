@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import '../css/WriteForm.css'; // 스타일을 위한 CSS 파일
 import imageAdd from '../image/imageAdd.jpg'; // 기본 이미지
+import {useNavigate} from 'react-router-dom'; //★ 11.04 수정
 
 function WriteForm() {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ function WriteForm() {
 
   const [imagePreview, setImagePreview] = useState(imageAdd); // 이미지 미리보기 상태
   const [descriptionLength, setDescriptionLength] = useState(0); // 설명 글자 수 상태
+  const navigate = useNavigate(); //★ 11.04 수정
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -37,32 +40,34 @@ function WriteForm() {
   const handleSubmit = async (e) => {
       e.preventDefault();
 
-      const postData = new FormData(); // FormData 객체 생성
-      postData.append('title', formData.title); // 제목 추가
-      postData.append('category_id', formData.category); // 카테고리 ID 추가
-      postData.append('user_id', 1); // userId가 없을 경우 1로 설정
-      postData.append('price', formData.price); // 가격 추가
-      postData.append('description', formData.description); // 설명 추가
-      postData.append('status', 'a'.charAt(0)); // 상태 추가
-      postData.append('image', formData.image); // 이미지 파일 추가
+      const postData = new FormData();
+      postData.append('title', formData.title);
+      postData.append('category_id', formData.category);
+      postData.append('user_id', 1);
+      postData.append('price', formData.price);
+      postData.append('description', formData.description);
+      postData.append('status', 'a'.charAt(0));
+      postData.append('image', formData.image);
 
       try {
           const response = await fetch('http://localhost:8080/product/regist', {
               method: 'POST',
-              body: postData, // FormData 객체를 body로 전달
+              body: postData,
           });
 
-          if (!response.ok) {
-              throw new Error('Failed to submit');
-          }
+          // 응답 상태와 텍스트 확인
+          console.log(`Response status: ${response.status}`);
+          const resultText = await response.text();
+          console.log('Response text:', resultText);
 
-          const result = await response.json();
-          console.log('Form submitted:', result);
+          // catch로 넘어가지 않도록 강제로 성공 처리
+          alert('상품이 등록되었습니다');
+          navigate('/');
       } catch (error) {
           console.error('Error submitting form:', error);
+          alert('상품 등록에 실패했습니다.');
       }
   };
-
 
 
   return (

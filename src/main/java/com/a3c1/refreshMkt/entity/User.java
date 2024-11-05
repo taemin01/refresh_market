@@ -30,6 +30,7 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products;
 
+
     //지운 column
     //@Column(nullable = false)
     //private String password;
