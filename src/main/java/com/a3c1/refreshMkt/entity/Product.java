@@ -2,6 +2,7 @@ package com.a3c1.refreshMkt.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.w3c.dom.Text;
@@ -17,14 +18,14 @@ public class Product {
     private Integer product_id;
 
     //여러 물건을 한 사람이 판매할 수 있음
-    @ManyToOne(optional = false) // 사용자 필드는 필수
+    @ManyToOne(fetch = FetchType.LAZY) // 사용자 필드는 필수
     @JoinColumn(name = "user_id", nullable = false)
+    @ToString.Exclude //무한 재귀 방지
     private User user;
 
     @ManyToOne(optional = true) // 카테고리가 선택적임을 명시
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
-
 
     @Column(nullable = false)
     private String title;

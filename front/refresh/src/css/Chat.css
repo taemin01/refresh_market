@@ -1,0 +1,152 @@
+/* 전체 채팅 페이지 스타일 */
+.chat-page {
+    display: flex;
+    flex-direction: column;
+    /*height: 100vh;*/
+}
+
+/* 헤더 영역 - 상품 정보, 이미지와 예약 버튼 포함 */
+.chat-header {
+    display: flex;
+    /*justify-content: space-between;*/
+    align-items: center;
+    padding: 10px 0; /* 좌우에 5% 여백 추가 */
+    background-color: #fff;
+
+}
+
+/* 상품 이미지 스타일 */
+.product-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    object-fit: cover; /* 비율을 유지하며 잘리지 않도록 설정 */
+    margin-right: 10px;
+}
+
+/* 상품 정보 - 이름과 가격 */
+.product-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-right: auto;
+}
+
+.chat-title {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+/* 상품 이름 스타일 */
+.product-name {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    margin-right: 10px;
+}
+
+/* 상품 가격 스타일 */
+.product-price {
+    margin-right: 10px;
+    font-size: 1em;
+    color: #333;
+    margin-top: 5px;
+}
+
+/* 예약 버튼 스타일 */
+.reservation-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 5px 15px;
+    margin: 0 5px;
+    font-size: 0.9em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.chat-center-container {
+    align-items: center;
+}
+
+/* 채팅 메시지 목록 컨테이너 */
+.chat-container {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+    background-color: #f9f9f9;
+}
+
+/* 내 메시지 스타일 */
+.my-message {
+    align-self: flex-end;
+    background-color: #dcf8c6; /* 초록색 배경 */
+    padding: 10px 15px;
+    border-radius: 15px 15px 0 15px; /* 왼쪽 상단 모서리는 둥글게 하지 않음 */
+    margin: 5px;
+    max-width: 70%;
+    color: #333;
+    font-size: 0.9em;
+    word-break: break-word; /* 긴 단어가 있을 때 줄바꿈 */
+}
+
+/* 상대방 메시지 스타일 */
+.their-message {
+    align-self: flex-start;
+    background-color: #f1f1f1; /* 회색 배경 */
+    padding: 10px 15px;
+    border-radius: 15px 15px 15px 0; /* 오른쪽 상단 모서리는 둥글게 하지 않음 */
+    margin: 5px;
+    max-width: 70%;
+    color: #333;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    word-break: break-word; /* 긴 단어가 있을 때 줄바꿈 */
+}
+
+/* 타임스탬프 스타일 */
+.timestamp {
+    display: block;
+    font-size: 0.75em;
+    margin-top: 5px;
+    text-align: right;
+    color: #666;
+}
+
+/* 입력 필드와 전송 버튼을 포함하는 영역 */
+.input-area {
+    display: flex;
+    align-items: center;
+}
+
+/* 메시지 입력 필드 스타일 */
+.input {
+    flex-grow: 1;
+    padding: 10px;
+    font-size: 1em;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    margin-right: 5px;
+}
+
+/* 전송 버튼 스타일 */
+.send-button {
+    padding: 10px;
+    font-size: 1em;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.send-button:hover {
+    background-color: #45a049;
+}

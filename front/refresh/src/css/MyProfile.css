@@ -1,0 +1,141 @@
+.App {
+    display: flex; /* 플렉스 박스 사용 */
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    width: 100%; /* 전체 너비 */
+    margin-top: 25px;
+
+}
+
+.Login-title {
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 25px;
+}
+
+.profile-container {
+    display: flex; /* 가로로 배치 */
+    justify-content: space-between; /* 양옆에 공간을 두기 위해 */
+    align-items: center; /* 상단 정렬 */
+    border: 1px solid #f7f7f7;
+    border-radius: 10px;
+    padding: 20px;
+    width: 800px;
+    height: 400px;
+    margin: 50px auto; /* 가운데 정렬 */
+    background-color: #fcfcfc;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+}
+
+.profile-image-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-left: 40px;
+}
+
+.profile-image {
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ddd;
+    margin-bottom: 15px; /* 이미지와 버튼 간 여백 */
+}
+
+.image-upload-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 5px; /* 기본적인 여백을 줄여주기 */
+    padding: 0; /* 불필요한 패딩을 제거 */
+}
+
+.image-upload-container p {
+    margin-bottom: 5px; /* 텍스트와 버튼 사이의 여백을 줄이기 */
+}
+
+.image-upload-button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    background-color: #f5f5f5;
+    color: #333;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.image-upload-button:hover {
+    background-color: #e0e0e0;
+}
+
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    margin-left: 70px;
+    position: relative; /* 자식 요소들이 절대 위치로 배치될 수 있게 설정 */
+    padding-bottom: 50px; /* 버튼들이 보이도록 충분한 여백 추가 */
+}
+
+.profile-info .profile-item {
+    display: flex;
+    align-items: center; /* 내용이 가로로 정렬되도록 */
+    margin-bottom: 15px;
+}
+
+.profile-info .profile-item p {
+    font-weight: bold;
+    font-size: 18px;
+    color: #333;
+    margin: 15px;
+    margin-right: 30px; /* 회원명과 위치가 옆에 오도록 여백 추가 */
+}
+
+.profile-info .profile-item span {
+    color: #666;
+    margin-right: 10px; /* "변경" 버튼과 구분되도록 여백 추가 */
+    margin-left: 1px;
+}
+
+.profile-info .edit-button {
+    padding: 8px 12px;
+    font-size: 14px;
+    background-color: #66bb6a;
+    color: white;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    position: absolute; /* 절대 위치 */
+
+    right: 10px; /* 왼쪽에 고정 */
+}
+
+.profile-info .edit-button:hover {
+    background-color: #4caf50;
+}
+
+.logout-button {
+    margin-top: 20px;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #ff7043;
+    color: white;
+    width: 100%;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    position: absolute; /* 절대 위치 */
+    bottom: 0px; /* 부모 요소의 하단에 고정 */
+    right: 10px; /* 오른쪽에 고정 */
+}
+
+.logout-button:hover {
+    background-color: #f4511e;
+}
