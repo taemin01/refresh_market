@@ -156,6 +156,7 @@ public class RegistController {
     }
 
     // 등록된 상품 목록 불러오기 ★(윤빈이꺼받아옴)
+    @Transactional
     @GetMapping("/list")
     public List<Product> getProductList() {
         return registService.findAll(); // RegistService에서 모든 상품 목록을 가져옴

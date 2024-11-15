@@ -18,7 +18,7 @@ public class Product {
     private Integer product_id;
 
     //여러 물건을 한 사람이 판매할 수 있음
-    @ManyToOne(fetch = FetchType.LAZY) // 사용자 필드는 필수
+    @ManyToOne(fetch = FetchType.EAGER) // 사용자 필드는 필수
     @JoinColumn(name = "user_id", nullable = false)
     @ToString.Exclude //무한 재귀 방지
     private User user;
