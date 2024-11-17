@@ -21,10 +21,10 @@ public class User {
     private String userName;
 
     @Column(nullable = false)
-    private float location_x;
+    private double location_x;
 
     @Column(nullable = false)
-    private float location_y;
+    private double location_y;
 
     @Column(nullable = false, name = "kakao_id", unique = true) // 고유한 카카오 아이디
     private Long kakaoId;

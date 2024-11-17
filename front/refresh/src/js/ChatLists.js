@@ -1,61 +1,69 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../firebase";
-import { ref, onValue, remove } from "firebase/database"; // remove 함수 추가
+import { ref, onValue, remove, update } from "firebase/database";
 import "../css/ChatLists.css";
 
 const ChatLists = () => {
     const navigate = useNavigate();
-    const [chatRooms, setChatRooms] = useState([]); // 채팅방 목록 변수 생성
-    const nickname = sessionStorage.getItem("nickname"); // 사용자 활동명 가져오기
+    const [chatRooms, setChatRooms] = useState([]); // 채팅방 목록 상태
+    const nickname = sessionStorage.getItem("nickname"); // 현재 사용자 닉네임
 
-    // Firebase에서 현재 사용자의 채팅방 목록 가져오는 useEffect
+    // **1. Firebase에서 채팅방 목록 가져오기**
     useEffect(() => {
-        if (!nickname) return; // 로그인하지 않아 활동명이 세션 스토리지에 없어 값이 없는 경우 리턴
+        if (!nickname) return; // 닉네임이 없으면 종료
 
-        // Firebase에서 사용자 채팅방 목록 가져오기 위한 참조 경로 설정 부분
         const chatRoomsRef = ref(database, `users/${nickname}/chatRooms`);
-
-        // Firebase의 onValue를 사용해 실시간 데이터 동기화 및 상태 업데이트
         const unsubscribe = onValue(chatRoomsRef, (snapshot) => {
             const rooms = snapshot.val();
-
-            // 데이터가 있을 경우 객체의 값을 배열로 변환하여 상태에 저장. 없으면 빈 배열로 설정
             const roomList = rooms
-                ? Object.entries(rooms).map(([id, room]) => ({ id, ...room }))
+                ? Object.entries(rooms).map(([id, room]) => ({
+                    id,
+                    ...room,
+                }))
                 : [];
             setChatRooms(roomList);
         });
 
-        // 컴포넌트 언마운트 시 Firebase 리스너 제거
-        return () => unsubscribe();
+        return () => unsubscribe(); // 컴포넌트 언마운트 시 Firebase 구독 해제
     }, [nickname]);
 
-    // 채팅방 삭제 함수
+    // **2. 채팅방 삭제**
     const handleDeleteChatRoom = (chatRoomId) => {
         const confirmation = window.confirm("정말 삭제하시겠습니까?");
         if (confirmation) {
             const chatRoomRef = ref(database, `users/${nickname}/chatRooms/${chatRoomId}`);
-            // Firebase에서 해당 채팅방 삭제
             remove(chatRoomRef)
                 .then(() => {
-                    console.log("채팅방이 삭제되었습니다.");
-                    // 삭제 후 채팅방 목록에서 제거
-                    setChatRooms((prevChatRooms) =>
-                        prevChatRooms.filter((room) => room.id !== chatRoomId)
-                    );
+                    console.log("채팅방 삭제 완료");
+                    setChatRooms((prev) => prev.filter((room) => room.id !== chatRoomId));
                 })
-                .catch((error) => {
-                    console.error("채팅방 삭제 중 오류 발생:", error);
-                });
+                .catch((error) => console.error("채팅방 삭제 중 오류:", error));
         }
     };
 
-    // 채팅방 클릭 시 호출되는 함수 -> 클릭된 채팅방으로 이동
-    const handleChatRoomClick = (chatRoomId, receiver, productPrice, productName, productImage) => {
-        // 선택한 채팅방으로 이동
+    // **3. 채팅방 입장**
+    const handleChatRoomClick = async (chatRoomId, room) => {
+        try {
+            const chatRoomRef = ref(database, `users/${nickname}/chatRooms/${chatRoomId}`);
+            await update(chatRoomRef, { unreadCount: 0 }); // 알림 초기화
+            console.log(room)
+        } catch (error) {
+            console.error("알림 초기화 실패:", error);
+        }
+
         navigate(`/chat/${chatRoomId}`, {
-            state: { chatRoomId, sender: nickname, receiver, productPrice, productName, productImage }
+            state: {
+                chatRoomId,
+                sender: nickname,
+                receiver: room.receiver,
+                productPrice: room.productPrice,
+                productName: room.productName,
+                productImage: room.productImage,
+                receiver_location_x: room.receiver_location_x,
+                receiver_location_y: room.receiver_location_y,
+                productId: room.productId
+            },
         });
     };
 
@@ -70,46 +78,35 @@ const ChatLists = () => {
                         <div
                             key={room.id}
                             className="chat-list-item"
-                            onClick={() =>
-                                handleChatRoomClick(
-                                    room.id,
-                                    room.receiver,
-                                    room.productPrice,
-                                    room.productName,
-                                    room.productImage
-                                )
-                            }
+                            onClick={() => handleChatRoomClick(room.id, room)}
                         >
-                            {/* 프로필 이미지 (상품 이미지 대체) */}
-                            <img
-                                src={room.productImage}
-                                alt={room.productName}
-                                className="profile-image"
-                            />
+                            <img src={room.productImage} alt={room.productName} className="profile-image" />
                             <div className="chat-info">
                                 <div className="chat-header">
                                     <h3 className="chat-name">{room.productName} / {room.receiver}</h3>
                                     <small className="chat-timestamp">
-                                        {new Date(room.timestamp).toLocaleTimeString()}
+                                        {new Date(room.timestamp).toLocaleString()}
                                     </small>
                                 </div>
-                                <p className="chat-last-message">{room.lastMessage}</p>
+                                <p className="chat-last-message">{room.lastMessage || "새 메시지가 없습니다."}</p>
                             </div>
-                            {/* 삭제 버튼 추가 */}
+                            {/* 읽지 않은 메시지 수 표시 */}
+                            {room.unreadCount > 0 && (
+                                <span className="unread-count">{room.unreadCount}</span>
+                            )}
+                            {/* 삭제 버튼 */}
                             <button
                                 className="delete-button"
                                 onClick={(e) => {
-                                    e.stopPropagation(); // 채팅방으로 이동하는 이벤트 막기
-                                    handleDeleteChatRoom(room.id); // 삭제 함수 호출
+                                    e.stopPropagation();
+                                    handleDeleteChatRoom(room.id);
                                 }}
                             >
                                 삭제
                             </button>
                         </div>
-
                     ))
                 )}
-
             </div>
         </div>
     );

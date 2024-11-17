@@ -11,9 +11,11 @@ import ProductDetail from './js/ProductDetail';
 import MyProfile from './js/MyProfile';
 import Chat from './js/Chat';
 import ChatLists from './js/ChatLists';
+import KakaoMap from "./js/KakaoMap";
 
 
 import './App.css';
+
 
 function App() {
   const [isLogin, setIsLogin] = useState(false);  // 로그인 상태 관리
@@ -50,6 +52,7 @@ function App() {
               path="/chat_lists"
               element={isLogin ? <ChatLists setIsLogin={setIsLogin} /> : <div>로그인이 필요합니다.</div>}
           />
+          <Route path="/kakaoMap" element={<KakaoMap />}></Route>
         </Routes>
       </div>
     </Router>
