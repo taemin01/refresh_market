@@ -1,60 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom"; // useParams로 상품 ID 가져오기
 import axios from 'axios';
 import '../css/ProductDetail.css';
-import namekoImage from '../image/nameko.jpg';
-import { database } from '../firebase';  // Firebase 데이터베이스 인스턴스 가져오기
-import { ref, set } from "firebase/database";  // Firebase의 ref와 set 함수 가져오기
+import { database } from '../firebase'; // Firebase 데이터베이스
+import { ref, set } from "firebase/database"; // Firebase의 ref와 set 함수
 
-const ProductDetail = ({ product }) => {
+const ProductDetail = () => {
     const navigate = useNavigate();
-    const currentUser = sessionStorage.getItem("nickname"); // 현재 사용자
-    const dummyProduct = {
-        id: 23,
-        name: '나메코-채팅테스트',
-        description: '나메코 인형 입니다.',
-        price: '10,000',
-        image: namekoImage,
-        status: 'a',
-        authorName: '홍길동' // 작성자 활동명
-    };
+    const { id } = useParams(); // URL에서 상품 ID 가져오기
+    const currentUser = sessionStorage.getItem("nickname"); // 현재 사용자 정보 가져오기
+    const kakaoId = sessionStorage.getItem("kakaoId"); // 로그인한 사용자의 Kakao ID
+    const [product, setProduct] = useState(null); // 상품 상세 정보 상태
+    const [transactionStatus, setTransactionStatus] = useState(""); // 거래 상태
+    const [isBookmarked, setIsBookmarked] = useState(false); // 북마크 상태
+    const [isAuthor, setIsAuthor] = useState(); // 작성자인지 여부
+    const [isLogin, setIsLogin] = useState(sessionStorage.getItem("isLogin")); // 로그인 여부 상태
+    console.log(isAuthor)
 
-    const { id, name, description, price, image, status: initialStatus, authorName } = product || dummyProduct;
-
-    const [transactionStatus, setTransactionStatus] = useState(initialStatus); // 거래 상태
-    const [isAuthor, setIsAuthor] = useState(false); // 작성자인지 여부
-
-    // 작성자 여부 확인
+    // 상품 상세 정보를 가져오는 함수
     useEffect(() => {
-        console.log("현재 사용자:", currentUser);
-        console.log("게시글 작성자:", authorName);
-        setIsAuthor(currentUser === authorName);
-    }, [currentUser, authorName]);
-
-    // **구매자는 상태를 서버에서 새로 fetch**
-    useEffect(() => {
-        const fetchTransactionStatus = async () => {
+        const fetchProductDetail = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/posts/${id}/author`);
+                const response = await axios.get(`http://localhost:8080/product/post/${id}`); // 백엔드 API 호출
                 const data = response.data;
-                setTransactionStatus(data.transaction_status); // 서버에서 상태를 가져옴
+                setProduct(data); // 상품 데이터 설정
+                setTransactionStatus(data.status); // 거래 상태 설정
+                setIsAuthor(currentUser === data.user.userName); // 작성자인지 확인
+
+                // 북마크 상태 가져오기
+                if (kakaoId) {
+                    const bookmarkResponse = await axios.get(`http://localhost:8080/bookmark/check/${id}`, {
+                        params: { kakaoId },
+                    });
+                    setIsBookmarked(bookmarkResponse.data); // true/false 설정
+                }
             } catch (error) {
-                console.error("거래 상태를 가져오는 데 실패했습니다:", error);
+                console.error("상품 정보를 가져오는 데 실패했습니다:", error);
             }
         };
 
-        if (!isAuthor) {
-            fetchTransactionStatus();
-        }
-    }, [id, isAuthor]);
+        fetchProductDetail();
+    }, [id, currentUser, kakaoId]);
 
     // 거래 상태 변경 함수 (판매자만 사용 가능)
     const handleStatusChange = async (newStatus) => {
-        if (!isAuthor) return; // 판매자가 아니면 실행하지 않음
+        if (!isAuthor) return; // 작성자가 아니면 실행 불가
 
         try {
-            await axios.patch(`http://localhost:8080/posts/${id}/status`, { status: newStatus });
-            setTransactionStatus(newStatus); // 거래 상태 업데이트
+            await axios.patch(`http://localhost:8080/posts/${id}/status`, { status: newStatus }); // 거래 상태 변경 API 호출
+            setTransactionStatus(newStatus); // 상태 업데이트
             alert("거래 상태가 변경되었습니다.");
         } catch (error) {
             console.error("거래 상태 변경 실패:", error);
@@ -63,58 +57,55 @@ const ProductDetail = ({ product }) => {
 
     // 거래하기 버튼 클릭 (구매자 전용)
     const handleBuyClick = async () => {
+        if (!product) {
+            alert("상품 정보가 로드되지 않았습니다. 잠시 후 다시 시도해주세요.");
+            return;
+        }
+
         try {
             const response = await axios.get(`http://localhost:8080/posts/${id}/author`);
             const data = response.data;
+            console.log("productDetail data : ", data);
+            const transaction_status = data.transaction_status;
             const receiver = data.activityName; // 판매자 이름
             const receiver_location_x = data.location_x;
             const receiver_location_y = data.location_y;
-            const productId = data.productId;
             const chatRoomId = currentUser < receiver ? `${currentUser}_${receiver}` : `${receiver}_${currentUser}`;
-            console.log(productId)
+
+            // Firebase에 채팅방 데이터 저장
             const senderChatRoomRef = ref(database, `users/${currentUser}/chatRooms/${chatRoomId}`);
             const receiverChatRoomRef = ref(database, `users/${receiver}/chatRooms/${chatRoomId}`);
 
-            // 구매자용 채팅방 데이터
-            const chatRoomDataForSender = {
+            const chatRoomData = {
                 receiver,
-                productName: name,
-                productImage: image,
-                productPrice: price,
-                productId,
+                productName: product.title,
+                productImage: product.image,
+                productPrice: product.price,
+                productId: product.product_id,
                 lastMessage: "",
                 receiver_location_x,
                 receiver_location_y,
                 timestamp: Date.now()
             };
 
-            // 판매자용 채팅방 데이터
-            const chatRoomDataForReceiver = {
+            await set(senderChatRoomRef, chatRoomData);
+            await set(receiverChatRoomRef, {
+                ...chatRoomData,
                 receiver: currentUser,
-                productName: name,
-                productImage: image,
-                productPrice: price,
-                productId,
-                lastMessage: "",
                 sender_location_x: parseFloat(sessionStorage.getItem("location_x")),
                 sender_location_y: parseFloat(sessionStorage.getItem("location_y")),
-                timestamp: Date.now()
-            };
-
-            await set(senderChatRoomRef, chatRoomDataForSender);
-            await set(receiverChatRoomRef, chatRoomDataForReceiver);
-
-
+            });
 
             navigate(`/chat/${chatRoomId}`, {
                 state: {
                     chatRoomId,
                     receiver,
                     sender: currentUser,
-                    productPrice: price,
-                    productName: name,
-                    productImage: image,
-                    productId
+                    productPrice: product.price,
+                    productName: product.title,
+                    productImage: product.image,
+                    productId: product.id,
+                    transaction_status
                 }
             });
         } catch (error) {
@@ -122,14 +113,51 @@ const ProductDetail = ({ product }) => {
         }
     };
 
+    // 북마크 버튼 클릭 이벤트 처리
+    const handleBookmarkButton = async () => {
+        if (!isLogin) {
+            alert("로그인이 필요합니다.");
+            return;
+        }
+
+        try {
+            const bookmarkRequest = {
+                kakaoId,
+                productId: parseInt(id, 10),
+            };
+
+            const response = await axios.post(`http://localhost:8080/bookmark/zzim/${id}`, bookmarkRequest, {
+                headers: { "Content-Type": "application/json" },
+            });
+
+            if (response.status === 200) {
+                const updatedBookmark = response.data;
+                if (updatedBookmark.status) {
+                    alert("찜하기가 완료되었습니다.");
+                } else {
+                    alert("찜하기가 취소되었습니다.");
+                }
+
+                setIsBookmarked(updatedBookmark.status); // 북마크 상태 업데이트
+            }
+        } catch (error) {
+            console.error("Bookmark request failed:", error);
+            alert("찜하기 요청 중 오류가 발생했습니다.");
+        }
+    };
+
+    if (!product) {
+        return <p>상품 정보를 불러오는 중입니다...</p>; // 로딩 상태 표시
+    }
+
     return (
         <div className="product-detail">
-            <img src={image} alt={name} className="product-detail-image" />
+            <img src={product.image} alt={product.name} className="product-detail-image" />
             <div className="product-detail-info">
-                <h2>{name}</h2>
-                <p className="product-detail-price">{price}</p>
-                <p className="product-detail-description">{description}</p>
-                <p className="product-detail-author">작성자: {authorName}</p>
+                <h2>{product.title}</h2>
+                <p className="product-detail-price">{product.price}</p>
+                <p className="product-detail-description">{product.description}</p>
+                <p className="product-detail-author">작성자: {product.user.userName}</p>
 
                 <div className="transaction-status">
                     <p>거래 상태: {transactionStatus === 'a' ? '판매중' : transactionStatus === 'b' ? '예약중' : '판매완료'}</p>
@@ -144,6 +172,9 @@ const ProductDetail = ({ product }) => {
                 {!isAuthor && transactionStatus !== 'c' && (
                     <button className="buy-button" onClick={handleBuyClick}>거래하기</button>
                 )}
+                <button className={`heart-button ${isBookmarked ? "active" : ""}`} onClick={handleBookmarkButton}>
+                    {isBookmarked ? "♥" : "♡"}
+                </button>
             </div>
         </div>
     );

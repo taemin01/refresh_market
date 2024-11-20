@@ -43,7 +43,7 @@ public class RegistController {
             @RequestParam("description") String description,
             @RequestParam(value = "image", required = false) MultipartFile image) { // 이미지 파일
 
-        char status = '1'; // status는 항상 1:판매중
+        char status = 'a'; // status는 항상 a:판매중
 
         // kakaoId가 null인 경우에만 더미 사용자 생성
         User user;

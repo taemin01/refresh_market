@@ -8,6 +8,7 @@ const ChatLists = () => {
     const navigate = useNavigate();
     const [chatRooms, setChatRooms] = useState([]); // 채팅방 목록 상태
     const nickname = sessionStorage.getItem("nickname"); // 현재 사용자 닉네임
+    console.log(nickname)
 
     // **1. Firebase에서 채팅방 목록 가져오기**
     useEffect(() => {

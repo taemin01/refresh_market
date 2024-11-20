@@ -9,7 +9,7 @@ function Chat() {
     const location = useLocation(); // 라우터로 전달된 데이터
     const navigate = useNavigate(); // 페이지 이동 함수
     //state로 넘어오는 것들은 단순히 JavaScript 객체로 처리되며 넘겨준 키 이름과 변수 이름이 동일하기만 하면 된다.
-    const { chatRoomId, receiver, sender, productPrice, productName, productImage, productId } = location.state || {}; // state로 전달된 데이터 추출
+    const { chatRoomId, receiver, sender, productPrice, productName, productImage, productId, transaction_status } = location.state || {}; // state로 전달된 데이터 추출
 
     const currentUser = sessionStorage.getItem("nickname"); // 현재 로그인한 사용자 닉네임
     const [messages, setMessages] = useState([]); // 채팅 메시지 상태
@@ -17,7 +17,8 @@ function Chat() {
     const [contextMenu, setContextMenu] = useState(null); // 컨텍스트 메뉴 위치 상태
     const [selectedMessage, setSelectedMessage] = useState(null); // 선택된 메시지 상태
     const messagesEndRef = useRef(null); // 스크롤 위치 참조
-    const [transactionStatus, setTransactionStatus] = useState(''); // 거래 상태
+    const [transactionStatus, setTransactionStatus] = useState(transaction_status); // 거래 상태
+    console.log("거래 상태 : ",transaction_status)
     console.log(productId)
 
 
@@ -29,6 +30,9 @@ function Chat() {
                     `http://localhost:8080/posts/${productId}/author`
                 ); // 게시글 정보 요청
                 const data = response.data;
+
+                console.log("데이터 디버깅(data) : ", data)
+                console.log("거래 상태", data.transaction_status);
 
                 if (data.transaction_status) {
                     setTransactionStatus(data.transaction_status); // 상태 업데이트

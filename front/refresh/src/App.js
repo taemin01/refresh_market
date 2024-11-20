@@ -12,6 +12,8 @@ import MyProfile from './js/MyProfile';
 import Chat from './js/Chat';
 import ChatLists from './js/ChatLists';
 import KakaoMap from "./js/KakaoMap";
+import Bookmark from './js/Bookmark';
+import SearchResults from './js/SearchResult';
 
 
 import './App.css';
@@ -44,6 +46,14 @@ function App() {
             path="/myProfile"
             element={isLogin ? <MyProfile setIsLogin={setIsLogin} /> : <div>로그인 필요합니다.</div>}
           />
+
+          <Route
+              path="/myBookmark"
+              element={isLogin ? <Bookmark /> : <div>로그인이 필요합니다.</div>}
+          />
+
+          {/* 검색 결과 페이지 라우트 추가 */}
+          <Route path="/search/name" element={<SearchResults />} />
 
           <Route path={"/newlogin"} element={<NewLogin/>}></Route>
           <Route path="/writeForm/:userId" element={<WriteForm />} /> {/* 글쓰기 폼에 아이디 */}

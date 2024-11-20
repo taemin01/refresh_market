@@ -5,7 +5,7 @@ import '../css/MyProfile.css'; // 내 정보 페이지용 CSS
 import logo from '../image/logo.png';
 
 const MyProfile = ({ setIsLogin }) => {  // 부모 컴포넌트에서 전달받은 setIsLogin
-    const [username, setUsername] = useState('기본 회원명');
+    const [username, setUsername] = useState(sessionStorage.getItem('nickname'));
     const [location, setLocation] = useState('기본 위치');
     const [profileImage, setProfileImage] = useState(logo); // 기본 프로필 이미지
     const navigate = useNavigate();
@@ -38,8 +38,10 @@ const MyProfile = ({ setIsLogin }) => {  // 부모 컴포넌트에서 전달받�
         // setIsLogin을 false로 업데이트
         setIsLogin(false);
 
+
         // 로그인 페이지로 이동
         navigate('/');  // 홈으로 이동하도록 변경
+        window.location.reload();
     };
 
     return (
