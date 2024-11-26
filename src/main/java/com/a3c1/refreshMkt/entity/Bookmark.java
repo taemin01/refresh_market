@@ -1,5 +1,6 @@
 package com.a3c1.refreshMkt.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -10,7 +11,6 @@ import org.hibernate.annotations.OnDeleteAction;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
 public class Bookmark {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,15 +18,17 @@ public class Bookmark {
     private Integer bookmark_id;
 
     //여러 북마크를 한 사람이 가질 수 있음
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     //여러 북마크를 한 물건이 가질 수 있음??
+//    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-    @OnDelete(action = OnDeleteAction.CASCADE)
+//    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Column(nullable = false)

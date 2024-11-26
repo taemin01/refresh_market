@@ -79,6 +79,7 @@ function WriteForm() {
     postData.append('price', formData.price);
     postData.append('description', formData.description);
     postData.append('image', formData.image);
+    console.log(FormData.image);
 
     try {
       // axios로 POST 요청

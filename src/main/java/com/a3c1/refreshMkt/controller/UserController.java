@@ -1,6 +1,7 @@
 package com.a3c1.refreshMkt.controller;
 
 import com.a3c1.refreshMkt.entity.User;
+import com.a3c1.refreshMkt.repository.UserRepository;
 import com.a3c1.refreshMkt.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
@@ -14,9 +15,11 @@ import java.util.Optional;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final UserRepository userRepository;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, UserRepository userRepository) {
         this.userService = userService;
+        this.userRepository = userRepository;
     }
 
     // 로그인된 사용자의 kakaoId를 세션에서 가져와서 사용자 정보를 반환
@@ -62,6 +65,30 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
+    @PutMapping("/update-username")
+    public ResponseEntity<Void> updateUsername(@RequestBody Map<String, String> request) {
+        System.out.println("이름 : " + request.get("username"));
+        String userName = request.get("username");
+        Long kakaoId = Long.parseLong(request.get("kakaoId"));
+
+        User user = userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setUserName(userName);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/update-location")
+    public ResponseEntity<Void> updateLocation(@RequestBody Map<String, String> request) {
+        Long kakaoId = Long.parseLong(request.get("kakaoId"));
+        double location_x = Double.parseDouble(request.get("location_x"));
+        double location_y = Double.parseDouble(request.get("location_y"));
+        User user = userRepository.findByKakaoId(kakaoId).orElseThrow(() -> new RuntimeException("User not found"));
+        user.setLocation_x(location_x);
+        user.setLocation_y(location_y);
+        userRepository.save(user);
+        return ResponseEntity.ok().build();
+    }
+
     // 회원 가입 또는 정보 업데이트 처리
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signUp(@RequestBody Map<String, String> request) {
@@ -94,7 +121,7 @@ public class UserController {
             user.setUserName(userName);
             user.setLocation_x(locationX);
             user.setLocation_y(locationY);
-            userService.updateUser(user.getUser_id(), user);
+            userService.updateUser(user.getUserId(), user);
             return ResponseEntity.ok(Map.of("message", "User information updated successfully"));
         } else {
             User newUser = new User();
@@ -106,4 +133,6 @@ public class UserController {
             return ResponseEntity.ok(Map.of("message", "User created successfully"));
         }
     }
+
+
 }

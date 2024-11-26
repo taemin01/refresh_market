@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+
 import {useNavigate} from "react-router-dom";
 
 const Bookmark = () => {
@@ -28,7 +29,6 @@ const Bookmark = () => {
     }, []);
 
     const handleBookMarkClick = (id) => {
-
         navigate(`/product/${id}`);
     }
 
@@ -39,14 +39,14 @@ const Bookmark = () => {
                 <ul>
                     {bookmarks.map((bookmark) => (
 
-                        <li key={bookmark.bookmark_id}
-                        onClick={() => handleBookMarkClick(bookmark.product.product_id)}>
-                            <h3>{bookmark.product.title}</h3>
-                            <p>{bookmark.product.price}원</p>
-                            <img src={bookmark.product.image} alt={bookmark.product.title} />
-                            <button onClick={() => alert("찜하기 상태는 변경만 가능합니다!")}>
-                                ♥
-                            </button>
+                        <li key={bookmark.bookmarkId}
+                        onClick={() => handleBookMarkClick(bookmark.productId)}>
+                            <h3>{bookmark.productName}</h3>
+                            <p>{bookmark.price}원</p>
+                            <img className="profile-image" src={`http://localhost:8080${bookmark.image}`} alt={bookmark.productName} />
+                            {/*<button onClick={() => alert("찜하기 상태는 변경만 가능합니다!")}>*/}
+                            {/*    ♥*/}
+                            {/*</button>*/}
                         </li>
                     ))}
                 </ul>

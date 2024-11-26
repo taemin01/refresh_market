@@ -3,16 +3,18 @@ import '../css/ProductItem.css'; // 스타일 파일도 필요에 따라 추가
 import {useNavigate} from 'react-router-dom';
 
 const ProductItem = ({ id, image, name, price }) => { // props 추가
+    console.log("이미지 파일 : ", image);
     const navigate = useNavigate();
 
     const handleClick = () => {
         navigate(`/product/${id}`);
     };
-
+    //`http://localhost:8080${encodeURI(product.image)}`
     // image가 이미 'http'로 시작하면 그대로 사용, 아니면 localhost:8080 경로를 붙임
-    const imageUrl = image && !image.startsWith('http')
-        ? `http://localhost:8080${image}`
-        : image;
+    // const imageUrl = image && !image.startsWith('http')
+    //     ? `http://localhost:8080${image}`
+    //     : image;
+    const imageUrl = `${encodeURI(image)}`
 
     console.log('Image URL:', imageUrl);  // 이미지 URL 로깅 (디버깅용)
 

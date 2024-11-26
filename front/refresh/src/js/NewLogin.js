@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios'; // axios 라이브러리 import
-//import '../css/NewLogin.css';
+import '../css/NewLogin.css'
+import axios from 'axios';
 
 const NewLogin = () => {
     const [username, setUsername] = useState('');

@@ -1,12 +1,16 @@
 package com.a3c1.refreshMkt.controller;
 
+import com.a3c1.refreshMkt.dto.ProductResponse;
 import com.a3c1.refreshMkt.entity.Category;
 import com.a3c1.refreshMkt.entity.Product;
 import com.a3c1.refreshMkt.entity.User;
+import com.a3c1.refreshMkt.repository.ProductRepository;
+import com.a3c1.refreshMkt.service.ProductService;
 import com.a3c1.refreshMkt.service.RegistService;
 import com.a3c1.refreshMkt.service.CategoryService;
 import com.a3c1.refreshMkt.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +38,10 @@ public class RegistController {
 
     @Autowired
     private RegistService registService;
+    @Autowired
+    private ProductRepository productRepository;
+    @Autowired
+    private ProductService productService;
 
     @PostMapping("/regist")
     public Product registerProduct(
@@ -84,7 +93,7 @@ public class RegistController {
     }
 
 
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> deleteProduct(@RequestParam Integer productId) {
         try {
             registService.delete(productId);
@@ -142,17 +151,28 @@ public class RegistController {
         }
     }
 
-
     private String saveImage(MultipartFile image) {
         // 실제 이미지 저장 로직을 구현
         // 임의로 경로를 설정하고, 이미지 파일을 해당 경로에 저장한다고 가정
-        String imagePath = "path/to/image.jpg"; // 실제 저장 경로로 수정 필요
+        String uploadDir = "/Users/antaemin/Desktop/swTeamProject/refresh-market/src/main/resources/static/images/"; // 실제 저장 경로로 수정 필요
+
+//        String uploadDir;
+        String originalFileName = image.getOriginalFilename(); //영어 이름으로 변경
+        String fileName = System.currentTimeMillis() + "_" + originalFileName.replaceAll("[^a-zA-Z0-9.]", "_");
+        String filePath = uploadDir + fileName;
         try {
-            image.transferTo(new java.io.File(imagePath)); // 이미지 파일을 해당 경로로 저장
+            java.io.File dir = new java.io.File(uploadDir);
+            if(!dir.exists()){
+                dir.mkdirs(); //디렉토리 생성
+            }
+
+            System.out.println("저장 경로: " + filePath);
+
+            image.transferTo(new java.io.File(filePath));
         } catch (Exception e) {
             e.printStackTrace(); // 예외 처리
         }
-        return imagePath; // 저장된 이미지 경로 반환
+        return "/images/" + fileName; //클라이언트가 접근할 수 있는 URL
     }
 
     // 등록된 상품 목록 불러오기 ★(윤빈이꺼받아옴)

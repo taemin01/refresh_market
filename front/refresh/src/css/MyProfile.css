@@ -113,7 +113,7 @@
     border: none;
     cursor: pointer;
     position: absolute; /* 절대 위치 */
-
+    width: 15%;
     right: 10px; /* 왼쪽에 고정 */
 }
 
@@ -127,7 +127,7 @@
     font-size: 16px;
     background-color: #ff7043;
     color: white;
-    width: 100%;
+    width: 15%;
     border-radius: 5px;
     border: none;
     cursor: pointer;

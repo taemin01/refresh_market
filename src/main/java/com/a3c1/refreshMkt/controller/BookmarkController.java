@@ -1,5 +1,6 @@
 package com.a3c1.refreshMkt.controller;
 
+import com.a3c1.refreshMkt.dto.BookmarkResponse;
 import com.a3c1.refreshMkt.entity.Bookmark;
 import com.a3c1.refreshMkt.entity.BookmarkRequest;
 import com.a3c1.refreshMkt.entity.Product;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/bookmark")
@@ -38,10 +40,11 @@ public class BookmarkController {
 
     // 북마크 추가/취소 API
     @PostMapping("/zzim/{productId}")
-    public ResponseEntity<Bookmark> toggleBookmark(@PathVariable Integer productId, @RequestBody BookmarkRequest bookmarkRequest) {
+    public ResponseEntity<BookmarkResponse> toggleBookmark(@PathVariable Integer productId, @RequestBody BookmarkRequest bookmarkRequest) {
         try {
             Bookmark bookmark = bookmarkService.toggleBookmark(bookmarkRequest);
-            return ResponseEntity.status(HttpStatus.OK).body(bookmark);  // 변경된 북마크 객체 반환
+            BookmarkResponse response = new BookmarkResponse(bookmark);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -50,16 +53,21 @@ public class BookmarkController {
 
     // 사용자별 북마크 목록 조회 API
     @GetMapping("/user/{kakaoId}")
-    public ResponseEntity<List<Bookmark>> getUserBookmarks(@PathVariable Long kakaoId) {
+    public ResponseEntity<List<BookmarkResponse>> getUserBookmarks(@PathVariable Long kakaoId) {
         Optional<User> existingUser = userService.getUserByKakaoId(kakaoId);
-        try {
-            List<Bookmark> bookmarks = bookmarkService.findByUserId(existingUser.get().getUser_id());
 
-            if (bookmarks.isEmpty()) {
+        try {
+            List<Bookmark> bookmarks = bookmarkService.findByUserId(existingUser.get().getUserId());
+            List<BookmarkResponse> response = bookmarks.stream()
+                            .map(BookmarkResponse::new)
+                            .collect(Collectors.toList());
+            System.out.println("북마크 : " + bookmarks.size());
+
+            if (response.isEmpty()) {
                 return ResponseEntity.noContent().build();
             }
 
-            return ResponseEntity.ok(bookmarks);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

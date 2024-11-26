@@ -33,7 +33,8 @@ function ProductList() {
             <ProductItem
               key={product.product_id}  // 제품 ID를 key로 사용
               id={product.product_id}
-              image={`http://localhost:8080${product.image}`} // 서버에서 받은 이미지 경로
+
+              image={`http://localhost:8080${encodeURI(product.image)}`} // 서버에서 받은 이미지 경로
               name={product.title} // 서버에서 받은 제품 제목
               // discription={product.discription}
               price={product.price} // 서버에서 받은 가격

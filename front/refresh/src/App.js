@@ -14,7 +14,7 @@ import ChatLists from './js/ChatLists';
 import KakaoMap from "./js/KakaoMap";
 import Bookmark from './js/Bookmark';
 import SearchResults from './js/SearchResult';
-
+import {ProductProvider} from "./js/ProductProvider";
 
 import './App.css';
 
@@ -31,41 +31,43 @@ function App() {
   }, []);
 
   return (
+    <ProductProvider>
     <Router>
-      <div className="App">
-        <Header isLogin={isLogin} setIsLogin = {setIsLogin}/>
-        <Routes>
-          <Route path="/" element={<><Banner /><ProductList /></>} /> {/* 기본 홈 경로 */}
-          <Route path="/writeForm" element={<WriteForm />} /> {/* 글쓰기 페이지 경로 */}
-          <Route path="/chat/:id" element={<Chat/>}></Route>
-          <Route path={"/kakaologin"} element={<Login/>}></Route>
-          <Route path="/auth/kakao/callback" element={<CallbackHandler />} />
+        <div className="App">
+          <Header isLogin={isLogin} setIsLogin = {setIsLogin}/>
+          <Routes>
+            <Route path="/" element={<><Banner /><ProductList /></>} /> {/* 기본 홈 경로 */}
+            <Route path="/writeForm" element={<WriteForm />} /> {/* 글쓰기 페이지 경로 */}
+            <Route path="/chat/:id" element={<Chat/>}></Route>
+            <Route path={"/kakaologin"} element={<Login/>}></Route>
+            <Route path="/auth/kakao/callback" element={<CallbackHandler />} />
 
-          {/* 로그인 상태에 따라 MyProfile 페이지 접근 여부 결정 */}
-          <Route
-            path="/myProfile"
-            element={isLogin ? <MyProfile setIsLogin={setIsLogin} /> : <div>로그인 필요합니다.</div>}
-          />
+            {/* 로그인 상태에 따라 MyProfile 페이지 접근 여부 결정 */}
+            <Route
+              path="/myProfile"
+              element={isLogin ? <MyProfile setIsLogin={setIsLogin} /> : <div>로그인 필요합니다.</div>}
+            />
 
-          <Route
-              path="/myBookmark"
-              element={isLogin ? <Bookmark /> : <div>로그인이 필요합니다.</div>}
-          />
+            <Route
+                path="/myBookmark"
+                element={isLogin ? <Bookmark /> : <div>로그인이 필요합니다.</div>}
+            />
 
-          {/* 검색 결과 페이지 라우트 추가 */}
-          <Route path="/search/name" element={<SearchResults />} />
+            {/* 검색 결과 페이지 라우트 추가 */}
+            <Route path="/search/name" element={<SearchResults />} />
 
-          <Route path={"/newlogin"} element={<NewLogin/>}></Route>
-          <Route path="/writeForm/:userId" element={<WriteForm />} /> {/* 글쓰기 폼에 아이디 */}
-          <Route path="/product/:id" element={<ProductDetail />} /> {/* 개별 페이지 경로 */}
-          <Route
-              path="/chat_lists"
-              element={isLogin ? <ChatLists setIsLogin={setIsLogin} /> : <div>로그인이 필요합니다.</div>}
-          />
-          <Route path="/kakaoMap" element={<KakaoMap />}></Route>
-        </Routes>
-      </div>
-    </Router>
+            <Route path={"/newlogin"} element={<NewLogin/>}></Route>
+            <Route path="/writeForm/:userId" element={<WriteForm />} /> {/* 글쓰기 폼에 아이디 */}
+            <Route path="/product/:id" element={<ProductDetail />} /> {/* 개별 페이지 경로 */}
+            <Route
+                path="/chat_lists"
+                element={isLogin ? <ChatLists setIsLogin={setIsLogin} /> : <div>로그인이 필요합니다.</div>}
+            />
+            <Route path="/kakaoMap" element={<KakaoMap />}></Route>
+          </Routes>
+        </div>
+      </Router>
+    </ProductProvider>
   );
 }
 

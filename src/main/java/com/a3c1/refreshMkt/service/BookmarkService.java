@@ -51,15 +51,14 @@ public class BookmarkService {
         if (existingBookmarkOpt.isPresent()) {
             // 기존 북마크가 있으면 상태를 토글
             Bookmark existingBookmark = existingBookmarkOpt.get();
-            boolean newStatus = !existingBookmark.getStatus(); // 상태 반전
-            existingBookmark.setStatus(newStatus);
+            existingBookmark.setStatus(!existingBookmark.getStatus());
             return bookmarkRepository.save(existingBookmark);
         } else {
             // 기존 북마크가 없으면 새로 생성
-            Bookmark newBookmark = new Bookmark();
-            newBookmark.setUser(user);
-            newBookmark.setProduct(product);
-            newBookmark.setStatus(true); // 활성화 상태로 생성
+            Bookmark newBookmark = new Bookmark(null, user, product, true);
+//            newBookmark.setUser(user);
+//            newBookmark.setProduct(product);
+//            newBookmark.setStatus(true); // 활성화 상태로 생성
             return bookmarkRepository.save(newBookmark);
         }
     }

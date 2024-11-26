@@ -11,6 +11,7 @@ function KakaoMap() {
     const [partnerLocation, setPartnerLocation] = useState(null); // 상대방 위치 저장
     const [isBuyer, setIsBuyer] = useState(null); // 구매자인지 여부 확인
     const [recommendations, setRecommendations] = useState([]); // 추천 편의시설 저장
+    console.log("디버깅 : ", isBuyer)
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -19,6 +20,7 @@ function KakaoMap() {
     const nickname = sessionStorage.getItem("nickname");
     const sender_location_x = parseFloat(sessionStorage.getItem("location_x"));
     const sender_location_y = parseFloat(sessionStorage.getItem("location_y"));
+    console.log("위치 정보 : ", sender_location_x, sender_location_y)
 
     // Firebase에서 상대방 위치 데이터 가져오기
     const fetchPartnerLocation = async () => {
@@ -163,17 +165,18 @@ function KakaoMap() {
                 <div className="input-section">
                     <div className="input-container">
                         <label>구매자 위치:</label>
-                        <input className="input-buyer" type="text" value={buyerLocation} readOnly />
+                        <input className="input-buyer" type="text" value={buyerLocation} readOnly/>
                     </div>
                     <div className="input-container">
                         <label>판매자 위치:</label>
-                        <input className="input-seller" type="text" value={sellerLocation} readOnly />
+                        <input className="input-seller" type="text" value={sellerLocation} readOnly/>
                     </div>
-                    <button className="reservation-button" onClick={() => navigate(-1)}>채팅으로 돌아가기</button>
+
                 </div>
+                <button className="reservation-button" onClick={() => navigate(-1)}>채팅으로 돌아가기</button>
 
                 <div className="map-container">
-                    <div id="map" style={{ width: '100%', height: '400px' }}></div>
+                    <div id="map" style={{width: '100%', height: '400px'}}></div>
                 </div>
 
                 <div className="midpoint-info">

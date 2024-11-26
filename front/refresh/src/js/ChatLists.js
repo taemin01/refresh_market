@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../firebase";
@@ -81,7 +83,7 @@ const ChatLists = () => {
                             className="chat-list-item"
                             onClick={() => handleChatRoomClick(room.id, room)}
                         >
-                            <img src={room.productImage} alt={room.productName} className="profile-image" />
+                            <img src={`http://localhost:8080${room.productImage}`} alt={room.productName} className="profile-image" />
                             <div className="chat-info">
                                 <div className="chat-header">
                                     <h3 className="chat-name">{room.productName} / {room.receiver}</h3>
@@ -114,3 +116,4 @@ const ChatLists = () => {
 };
 
 export default ChatLists;
+

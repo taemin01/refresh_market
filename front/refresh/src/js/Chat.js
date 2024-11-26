@@ -18,8 +18,9 @@ function Chat() {
     const [selectedMessage, setSelectedMessage] = useState(null); // 선택된 메시지 상태
     const messagesEndRef = useRef(null); // 스크롤 위치 참조
     const [transactionStatus, setTransactionStatus] = useState(transaction_status); // 거래 상태
-    console.log("거래 상태 : ",transaction_status)
-    console.log(productId)
+    // console.log("거래 상태 : ",transaction_status)
+    // console.log('chatRoomId : ', chatRoomId);
+    // console.log(productImage);
 
 
     // **1. 현재 상품의 거래 상태 가져오기**
@@ -31,8 +32,8 @@ function Chat() {
                 ); // 게시글 정보 요청
                 const data = response.data;
 
-                console.log("데이터 디버깅(data) : ", data)
-                console.log("거래 상태", data.transaction_status);
+                // console.log("데이터 디버깅(data) : ", data)
+                // console.log("거래 상태", data.transaction_status);
 
                 if (data.transaction_status) {
                     setTransactionStatus(data.transaction_status); // 상태 업데이트
@@ -117,6 +118,7 @@ function Chat() {
 
                 await update(chatRoomRef, {
                     lastMessage: newMessage, // 마지막 메시지 업데이트
+
                     unreadCount: unreadCount + 1, // 읽지 않은 메시지 수 증가
                 });
             }
@@ -189,7 +191,7 @@ function Chat() {
     return (
         <div className="chat-page" onClick={closeContextMenu}>
             <div className="chat-header">
-                <img src={productImage} alt={productName} className="product-image" />
+                <img src={`http://localhost:8080${productImage}`} alt={productName} className="product-image" />
                 <div className="product-info">
                     <h2 className="chat-title">{otherUser}님과 대화방</h2>
                     <h2 className="product-name">{productName}</h2>

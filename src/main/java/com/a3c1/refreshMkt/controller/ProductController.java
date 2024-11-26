@@ -1,11 +1,13 @@
 package com.a3c1.refreshMkt.controller;
 
+import com.a3c1.refreshMkt.dto.ProductResponse;
 import com.a3c1.refreshMkt.entity.Product;
 import com.a3c1.refreshMkt.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -29,6 +31,11 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.status(500).body(null); // 서버 오류 발생 시 500 상태 반환
         }
+    }
+
+    @GetMapping("/user_list")
+    public List<ProductResponse> getUserProdectList(@RequestParam String username) {
+        return productService.getProductByUserNickname(username);
     }
 
 }

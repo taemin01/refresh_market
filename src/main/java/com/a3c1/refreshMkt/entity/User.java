@@ -14,8 +14,8 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false, name="userId")
-    private Integer user_id;
+    @Column(nullable = false, name="user_id")
+    private Integer userId;
 
     @Column(nullable = false, name="user_name")  // name 속성으로 컬럼명을 명시적으로 지정
     private String userName;

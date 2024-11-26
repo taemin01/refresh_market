@@ -4,6 +4,7 @@ import axios from 'axios';
 import '../css/ProductDetail.css';
 import { database } from '../firebase'; // Firebase 데이터베이스
 import { ref, set } from "firebase/database"; // Firebase의 ref와 set 함수
+import {useProductContext} from "./ProductProvider";
 
 const ProductDetail = () => {
     const navigate = useNavigate();
@@ -15,7 +16,8 @@ const ProductDetail = () => {
     const [isBookmarked, setIsBookmarked] = useState(false); // 북마크 상태
     const [isAuthor, setIsAuthor] = useState(); // 작성자인지 여부
     const [isLogin, setIsLogin] = useState(sessionStorage.getItem("isLogin")); // 로그인 여부 상태
-    console.log(isAuthor)
+    // setProduct(useProductContext());
+    // console.log(product)
 
     // 상품 상세 정보를 가져오는 함수
     useEffect(() => {
@@ -66,12 +68,13 @@ const ProductDetail = () => {
             const response = await axios.get(`http://localhost:8080/posts/${id}/author`);
             const data = response.data;
             console.log("productDetail data : ", data);
+
             const transaction_status = data.transaction_status;
             const receiver = data.activityName; // 판매자 이름
             const receiver_location_x = data.location_x;
             const receiver_location_y = data.location_y;
-            const chatRoomId = currentUser < receiver ? `${currentUser}_${receiver}` : `${receiver}_${currentUser}`;
-
+            // const chatRoomId = currentUser < receiver ? `${data.productId}_${currentUser}_${receiver}` : `${data.productId}_${receiver}_${currentUser}`;
+            const chatRoomId = `${product.product_id}_${currentUser}_${receiver}`;
             // Firebase에 채팅방 데이터 저장
             const senderChatRoomRef = ref(database, `users/${currentUser}/chatRooms/${chatRoomId}`);
             const receiverChatRoomRef = ref(database, `users/${receiver}/chatRooms/${chatRoomId}`);
@@ -90,10 +93,16 @@ const ProductDetail = () => {
 
             await set(senderChatRoomRef, chatRoomData);
             await set(receiverChatRoomRef, {
-                ...chatRoomData,
+                // ...chatRoomData,
                 receiver: currentUser,
+                productName: product.title,
+                productImage: product.image,
+                productPrice: product.price,
+                productId: product.product_id,
+                lastMessage: "",
                 sender_location_x: parseFloat(sessionStorage.getItem("location_x")),
                 sender_location_y: parseFloat(sessionStorage.getItem("location_y")),
+                timestamp: Date.now()
             });
 
             navigate(`/chat/${chatRoomId}`, {
@@ -129,9 +138,11 @@ const ProductDetail = () => {
             const response = await axios.post(`http://localhost:8080/bookmark/zzim/${id}`, bookmarkRequest, {
                 headers: { "Content-Type": "application/json" },
             });
-
+            console.log("응답 상태 디버깅 : ", response)
+            console.log("디버깅 : ",response.status);
             if (response.status === 200) {
                 const updatedBookmark = response.data;
+
                 if (updatedBookmark.status) {
                     alert("찜하기가 완료되었습니다.");
                 } else {
@@ -152,7 +163,7 @@ const ProductDetail = () => {
 
     return (
         <div className="product-detail">
-            <img src={product.image} alt={product.name} className="product-detail-image" />
+            <img src={`http://localhost:8080${product.image}`} alt={product.name} className="product-detail-image" />
             <div className="product-detail-info">
                 <h2>{product.title}</h2>
                 <p className="product-detail-price">{product.price}</p>
