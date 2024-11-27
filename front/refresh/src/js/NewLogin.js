@@ -55,6 +55,8 @@ const NewLogin = () => {
         if (usernameError) {
             setErrorUsername(usernameError);
             return;
+        } else {
+            sessionStorage.setItem('nickname', username);
         }
 
         try {
@@ -75,7 +77,9 @@ const NewLogin = () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const currentLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
-                    console.log(currentLocation);
+                    console.log(position.coords.latitude, position.coords.longitude);
+                    sessionStorage.setItem('location_x', position.coords.latitude);
+                    sessionStorage.setItem('location_y', position.coords.longitude);
                     setLocation(currentLocation);
                     setErrorLocation('');
                 },

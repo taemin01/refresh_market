@@ -1,3 +1,9 @@
+.body {
+    display: flex; /* Flexbox 레이아웃 사용 */
+    justify-content: center; /* 가로 방향 가운데 정렬 */
+    align-items: center; /* 세로 방향 가운데 정렬 */
+}
+
 .chat-lists {
     display: flex;
     width: 50%;

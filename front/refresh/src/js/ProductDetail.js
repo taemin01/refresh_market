@@ -4,7 +4,6 @@ import axios from 'axios';
 import '../css/ProductDetail.css';
 import { database } from '../firebase'; // Firebase 데이터베이스
 import { ref, set } from "firebase/database"; // Firebase의 ref와 set 함수
-import {useProductContext} from "./ProductProvider";
 
 const ProductDetail = () => {
     const navigate = useNavigate();
@@ -17,7 +16,8 @@ const ProductDetail = () => {
     const [isAuthor, setIsAuthor] = useState(); // 작성자인지 여부
     const [isLogin, setIsLogin] = useState(sessionStorage.getItem("isLogin")); // 로그인 여부 상태
     // setProduct(useProductContext());
-    // console.log(product)
+    console.log(product)
+    console.log(isAuthor)
 
     // 상품 상세 정보를 가져오는 함수
     useEffect(() => {
@@ -27,6 +27,8 @@ const ProductDetail = () => {
                 const data = response.data;
                 setProduct(data); // 상품 데이터 설정
                 setTransactionStatus(data.status); // 거래 상태 설정
+                console.log(data.user.userName);
+                console.log(currentUser)
                 setIsAuthor(currentUser === data.user.userName); // 작성자인지 확인
 
                 // 북마크 상태 가져오기
@@ -122,6 +124,25 @@ const ProductDetail = () => {
         }
     };
 
+    const handleDeleteProduct = async () => {
+        try {
+            console.log("id : ", id);
+            console.log("productId : ", product.productId);
+            const response = await axios.delete(`http://localhost:8080/product/delete`, {
+
+                params: { productId: id }, // 쿼리 파라미터로 productId 전달
+            });
+            if (response.status === 204) {
+                alert("상품이 성공적으로 삭제되었습니다.");
+                navigate("/");
+                // 성공 후 필요한 작업 수행 (예: 목록 갱신)
+            }
+        } catch (error) {
+            console.error("상품 삭제 실패:", error);
+            alert("상품 삭제 중 문제가 발생했습니다.");
+        }
+    }
+
     // 북마크 버튼 클릭 이벤트 처리
     const handleBookmarkButton = async () => {
         if (!isLogin) {
@@ -163,12 +184,13 @@ const ProductDetail = () => {
 
     return (
         <div className="product-detail">
-            <img src={`http://localhost:8080${product.image}`} alt={product.name} className="product-detail-image" />
-            <div className="product-detail-info">
+            <img src={`http://localhost:8080${product.image}`} alt={product.name} className="productdetail-image"/>
+
+            {/* 상품 정보 */}
+            <div className="productdetail-info">
                 <h2>{product.title}</h2>
-                <p className="product-detail-price">{product.price}</p>
-                <p className="product-detail-description">{product.description}</p>
-                <p className="product-detail-author">작성자: {product.user.userName}</p>
+                <p className="productdetail-description">{product.description}</p>
+                <p className="productdetail-price">{product.price}원</p>
 
                 <div className="transaction-status">
                     <p>거래 상태: {transactionStatus === 'a' ? '판매중' : transactionStatus === 'b' ? '예약중' : '판매완료'}</p>
@@ -180,12 +202,31 @@ const ProductDetail = () => {
                         </select>
                     )}
                 </div>
-                {!isAuthor && transactionStatus !== 'c' && (
-                    <button className="buy-button" onClick={handleBuyClick}>거래하기</button>
-                )}
-                <button className={`heart-button ${isBookmarked ? "active" : ""}`} onClick={handleBookmarkButton}>
-                    {isBookmarked ? "♥" : "♡"}
-                </button>
+
+                <div className="productdetail-btn">
+                    {!isAuthor && ( // 작성자가 아닌 경우에만 북마크 버튼 표시
+                        <button
+                            className={`heart-button ${isBookmarked ? "clicked" : ""}`}
+                            onClick={handleBookmarkButton}
+                        >
+                            ❤
+                        </button>
+                    )}
+                    {isAuthor ? (
+                        <>
+                            <button className="product-delete-button" onClick={handleDeleteProduct}>
+                                삭제
+                            </button>
+                        </>
+                    ) : (
+                        transactionStatus !== 'c' && (
+                            <button className="buy-button" onClick={handleBuyClick}>
+                                거래하기
+                            </button>
+                        )
+                    )}
+                </div>
+
             </div>
         </div>
     );

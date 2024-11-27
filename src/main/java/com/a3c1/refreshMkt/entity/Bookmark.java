@@ -28,7 +28,7 @@ public class Bookmark {
 //    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Column(nullable = false)

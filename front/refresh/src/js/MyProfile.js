@@ -147,7 +147,6 @@ const MyProfile = ({ setIsLogin }) => {
             <h1 className="Login-title"> 마이페이지 </h1>
             <div className="profile-container">
 
-
                 <div className="profile-info">
                     <div className="profile-item">
                         <p>회원명 :</p>
@@ -163,7 +162,7 @@ const MyProfile = ({ setIsLogin }) => {
                     <button className="logout-button" onClick={handleLogout}>로그아웃</button>
                 </div>
             </div>
-            <div className="" onClick={handleClick}>
+            <div className="product-list" onClick={handleClick}>
                 {products.length > 0 ? (
                     products.map(product => (
                         <ProductItem

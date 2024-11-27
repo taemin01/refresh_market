@@ -4,6 +4,7 @@ import com.a3c1.refreshMkt.entity.Bookmark;
 import com.a3c1.refreshMkt.entity.Product;
 import com.a3c1.refreshMkt.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -19,4 +20,8 @@ public interface BookmarkRepository extends JpaRepository<Bookmark, Integer> {
     Optional<Bookmark> findByUserAndProduct(@Param("user") User user, @Param("product") Product product);
 
     void deleteByUserAndProduct(User user, Product product);
+
+    @Modifying
+    @Query("DELETE FROM Bookmark b WHERE b.product.product_id = :productId")
+    void deleteByProductId(@Param("productId") Integer productId);
 }

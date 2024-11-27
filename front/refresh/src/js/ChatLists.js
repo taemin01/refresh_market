@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { database } from "../firebase";
@@ -71,45 +69,48 @@ const ChatLists = () => {
     };
 
     return (
-        <div className="chat-lists">
-            <h2>{nickname}님의 채팅 목록</h2>
-            <div className="chat-list-items">
-                {chatRooms.length === 0 ? (
-                    <p>진행 중인 채팅이 없습니다.</p>
-                ) : (
-                    chatRooms.map((room) => (
-                        <div
-                            key={room.id}
-                            className="chat-list-item"
-                            onClick={() => handleChatRoomClick(room.id, room)}
-                        >
-                            <img src={`http://localhost:8080${room.productImage}`} alt={room.productName} className="profile-image" />
-                            <div className="chat-info">
-                                <div className="chat-header">
-                                    <h3 className="chat-name">{room.productName} / {room.receiver}</h3>
-                                    <small className="chat-timestamp">
-                                        {new Date(room.timestamp).toLocaleString()}
-                                    </small>
-                                </div>
-                                <p className="chat-last-message">{room.lastMessage || "새 메시지가 없습니다."}</p>
-                            </div>
-                            {/* 읽지 않은 메시지 수 표시 */}
-                            {room.unreadCount > 0 && (
-                                <span className="unread-count">{room.unreadCount}</span>
-                            )}
-                            {/* 삭제 버튼 */}
-                            <button
-                                className="delete-button"
-                                onClick={(e) => {
-                                    e.stopPropagation();
-                                    handleDeleteChatRoom(room.id);
-                                }}
+        <div className="body">
+            <div className="chat-lists">
+                <h2>{nickname}님의 채팅 목록</h2>
+                <div className="chat-list-items">
+                    {chatRooms.length === 0 ? (
+                        <p>진행 중인 채팅이 없습니다.</p>
+                    ) : (
+                        chatRooms.map((room) => (
+                            <div
+                                key={room.id}
+                                className="chat-list-item"
+                                onClick={() => handleChatRoomClick(room.id, room)}
                             >
-                                삭제
-                            </button>
-                        </div>
-                    ))
-                )}
+                                <img src={`http://localhost:8080${room.productImage}`} alt={room.productName}
+                                     className="profile-image"/>
+                                <div className="chat-info">
+                                    <div className="chat-header">
+                                        <h3 className="chat-name">{room.productName} / {room.receiver}</h3>
+                                        <small className="chat-timestamp">
+                                            {new Date(room.timestamp).toLocaleString()}
+                                        </small>
+                                    </div>
+                                    <p className="chat-last-message">{room.lastMessage || "새 메시지가 없습니다."}</p>
+                                </div>
+                                {/* 읽지 않은 메시지 수 표시 */}
+                                {room.unreadCount > 0 && (
+                                    <span className="unread-count">{room.unreadCount}</span>
+                                )}
+                                {/* 삭제 버튼 */}
+                                <button
+                                    className="delete-button"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleDeleteChatRoom(room.id);
+                                    }}
+                                >
+                                    삭제
+                                </button>
+                            </div>
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );

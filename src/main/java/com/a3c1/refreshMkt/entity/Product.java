@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.transaction.annotation.Transactional;
 import org.w3c.dom.Text;
 
 import java.sql.Timestamp;
@@ -12,6 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Data
+
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

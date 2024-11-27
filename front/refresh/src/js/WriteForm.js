@@ -101,10 +101,11 @@ function WriteForm() {
   return (
       <div className="write-form">
         <h2>
-          {formData.nickname}님,<br />
+          {formData.nickname}님,<br/>
           물품 정보를 등록해주세요!
         </h2>
-        <hr /><br />
+        <hr/>
+        <br/>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="title">상품명</label>
@@ -114,6 +115,7 @@ function WriteForm() {
                 name="title"
                 value={formData.title}
                 onChange={handleChange}
+                className='fromdata-title'
                 placeholder="최대 50자까지 입력 가능해요."
                 required
             />
@@ -125,6 +127,7 @@ function WriteForm() {
               <select
                   id="category"
                   name="category"
+                  className='fromdata-title'
                   value={formData.category}
                   onChange={handleChange}
                   required
@@ -134,6 +137,7 @@ function WriteForm() {
                 <option value="2">가구</option>
                 <option value="3">도서</option>
                 <option value="4">전자기기</option>
+                <option value="5">잡화</option>
               </select>
             </div>
 
@@ -145,6 +149,7 @@ function WriteForm() {
                   name="price"
                   value={formData.price}
                   onChange={handleChange}
+                  className='fromdata-price-title'
                   placeholder="가격을 결정해요."
                   required
               />
@@ -159,6 +164,7 @@ function WriteForm() {
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
+                className='fromdata-title'
                 placeholder="최대 1000자까지 입력 가능해요.\n물품에 관한 정보를 자세히 기술해주세요!"
                 required
             />
@@ -173,12 +179,13 @@ function WriteForm() {
                 id="image"
                 name="image"
                 accept="image/*"
+                className='fromdata-title'
                 onChange={handleChange}
             />
           </div>
 
           <div className="image-preview">
-            <img src={imagePreview} alt="Selected Preview" />
+            <img src={imagePreview} alt="Selected Preview"/>
           </div>
 
           <button type="submit">등록</button>

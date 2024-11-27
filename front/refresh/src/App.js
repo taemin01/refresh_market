@@ -14,7 +14,7 @@ import ChatLists from './js/ChatLists';
 import KakaoMap from "./js/KakaoMap";
 import Bookmark from './js/Bookmark';
 import SearchResults from './js/SearchResult';
-import {ProductProvider} from "./js/ProductProvider";
+// import {ProductProvider} from "./js/ProductProvider";
 
 import './App.css';
 
@@ -31,7 +31,7 @@ function App() {
   }, []);
 
   return (
-    <ProductProvider>
+    // <ProductProvider>
     <Router>
         <div className="App">
           <Header isLogin={isLogin} setIsLogin = {setIsLogin}/>
@@ -67,7 +67,7 @@ function App() {
           </Routes>
         </div>
       </Router>
-    </ProductProvider>
+    // </ProductProvider>
   );
 }
 

@@ -50,28 +50,22 @@ export default function SearchResults() {
     }
 
     return (
-        <div>
-            <h3>검색 결과</h3>
+        <div className="search-results-container">
+            <h3 className="search-results-title">검색 결과</h3>
             {loading ? (
                 <p>로딩 중...</p>
             ) : error ? (
                 <p>{error}</p>
             ) : results.length > 0 ? (
-                <div>
+                <div className="results-list">
                     {results.map((post) => (
-                        <div key={post.product_id} className="post"
+                        <div key={post.product_id} className="result-item"
                              onClick={() => handlePostClick(post.product_id)}>
-                            <h4>{post.title}</h4>
-                            <p>{post.content}</p>
-                            <p>가격: {post.price}</p>
-                            {post.image && (
-                                <img
-                                    src={post.image}
-                                    alt="게시글 이미지"
-                                    style={{ width: '200px', height: 'auto' }}
-                                />
-                            )}
-                            <p>{new Date(post.timestamp).toLocaleString()}</p>
+                            <img className="result-item-image" src={`http://localhost:8080${post.image}`} alt="게시글 이미지"/>
+                            <div className="result-item-details">
+                                <h4 className="result-item-title">{post.title}</h4>
+                                <p className="result-item-price">{post.price}</p>
+                            </div>
                         </div>
                     ))}
                 </div>

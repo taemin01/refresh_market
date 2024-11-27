@@ -15,6 +15,7 @@
 }
 
 .search-bar {
+  font-family: 'SUITE Variable', sans-serif !important;
   width: 80%;
   max-width: 320px;
   padding: 12px;
@@ -48,23 +49,4 @@ nav {
 .nav-btn:hover {
   text-decoration: underline;
   background: none;
-}
-
-.nav-btn-container {
-  position: relative; /* 알림 뱃지의 기준을 잡아줌 */
-  display: inline-block; /* 컨테이너를 적절히 감쌈 */
-}
-
-/* 알림 뱃지 */
-.notification-badge {
-  background-color: red;
-  color: white;
-  border-radius: 50%;
-  padding: 4px 8px;
-  font-size: 12px;
-  font-weight: bold;
-  position: absolute; /* 부모 요소를 기준으로 위치 지정 */
-  top: -12px;
-  right: -12px;
-
 }

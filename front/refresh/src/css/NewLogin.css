@@ -1,38 +1,114 @@
-/* 전체 페이지 중앙 정렬을 위한 래퍼 */
-.signup-container {
+/* 전체 컨테이너 설정 */
+.newlogin{
+    width: 100%; /* 전체 너비 설정 */
+    max-width: 800px; /* 최대 너비 설정 */
+    margin: 0 auto; /* 중앙 정렬 */
     display: flex;
-    justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    height: 100vh; /* 화면 전체 높이 사용 */
+    justify-content: center; /* 중앙 정렬 */
+    flex-direction: column; /* 세로 방향으로 정렬 */
+    height: 100vh; /* 전체 화면 높이 */
+    background-color: #ffffff; /* 배경색 추가 */
 }
 
-.signup-page{
+.newlogin-container {
     display: flex;
-    flex-direction: column;
-    border-radius: 30px; /* 모서리 둥글기 조정 */
-    border: 2px solid #C3C3C3; /* 경계 스타일 */
-    padding: 30px; /* 패딩 조정 */
-    margin: 20px; /* 마진 조정 */
-    background-color: #D5FFD1; /* 배경색 추가 */
-    width: 400px; /* 너비 증가 */
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2); /* 그림자 추가 */
+    flex-direction: column; /* 수직 정렬 */
+    align-items: center; /* 중앙 정렬 */
+    width: 100%;
+    margin-right: 5px;
 }
 
-.signup-button{
-    padding: 8px; /* 버튼 내부 여백 */
-    color: #81ff55; /* 버튼 배경색 */
-    background-color: rgb(255, 255, 255); /* 버튼 글자색 */
-    border-color: #81ff55;
-    border-radius: 10px; /* 버튼 모서리 둥글기 */
-    cursor: pointer; /* 마우스 커서를 포인터로 변경 */
-    width: 100%; /* 버튼 너비를 100%로 설정 */
-    transition: background-color 0.3s; /* 배경색 전환 효과 */
-    margin-bottom: 10px; /* 버튼 간의 간격 추가 */
+.newlogin-title{
+    font-size: 30px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+
+    position: relative; /* 밑줄을 위한 위치 기준 */
+}
+.title {
+    color: black;
+    font-size: 15px;
+    text-align: left;
+    margin: 10px;
+    font-weight: bold;
+    width: 100%;
+    margin-left: 460px;
 }
 
-.error-msg{
+.insert {
+    width:330px; /* 입력 필드 너비 */
+    height : 18px;
+    padding: 12px;
+    margin: 2px 0; /* 상하 여백 추가 */
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+    font-family:'SUITE Variable', sans-serif;
+
+}
+
+.check, .signup-button {
+    width: 350px; /* 버튼 너비 */
+    height: 48px; /* 버튼 높이 */
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    background-color: #cacaca;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+
+    margin: 10px 0; /* 상하 여백 추가 */
+}
+.location-button{
+    width: 350px; /* 버튼 너비 */
+    height: 50px; /* 버튼 높이 */
+    font-size: 15px;
+    font-weight: bold;
+    color: white;
+    background-color: #cacaca;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 8px 0; /* 상하 여백 추가 */
+
+
+}
+
+.signup-button {
+    width: 350px;
+    height: 48px;
+    font-size: 15px;
+    font-weight: bold;
+    background-color: white;
+    color: #5d5d5d;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin: 10px 0;
+}
+
+/* 버튼 호버 효과 */
+.check:hover, .location-button:hover {
+    background-color: #dadada;
+}
+
+.signup-button:hover {
+
+    color: rgb(0, 0, 0);
+}
+
+.error-msg {
     color: red;
-    font-size : 10px;
-    margin-top : 1px;
+    font-size: 10px;
+    margin-top: 1px;
     margin-bottom: 1px;
+
+
 }

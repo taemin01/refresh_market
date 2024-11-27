@@ -189,77 +189,81 @@ function Chat() {
     };
 
     return (
-        <div className="chat-page" onClick={closeContextMenu}>
-            <div className="chat-header">
-                <img src={`http://localhost:8080${productImage}`} alt={productName} className="product-image" />
-                <div className="product-info">
-                    <h2 className="chat-title">{otherUser}님과 대화방</h2>
-                    <h2 className="product-name">{productName}</h2>
-                    <p className="product-price">{productPrice}원</p>
+        <div className="body">
+            <div className="chat-page" onClick={closeContextMenu}>
+                <div className="chat-header">
+                    <img src={`http://localhost:8080${productImage}`} alt={productName} className="product-image"/>
+                    <div className="product-info">
+                        <h2 className="chat-title">{otherUser}님과 대화방</h2>
+                        <h2 className="product-name">{productName}</h2>
+                        <p className="product-price">{productPrice}원</p>
+                    </div>
+                    <div>
+                        <button className="reservation-button" onClick={goToMidpointCalculator}>
+                            중간 거리 계산
+                        </button>
+                        <button className="reservation-button">
+                            {transactionStatus === "a" && " 판매중"}
+                            {transactionStatus === "b" && " 예약중"}
+                            {transactionStatus === "c" && " 판매완료"}
+                        </button>
+                    </div>
                 </div>
-                <div>
-                    <button className="reservation-button" onClick={goToMidpointCalculator}>
-                        중간 거리 계산
-                    </button>
-                    <button className="reservation-button">
-                        {transactionStatus === "a" && " 판매중"}
-                        {transactionStatus === "b" && " 예약중"}
-                        {transactionStatus === "c" && " 판매완료"}
+                <div className="chat-container">
+                    {messages.length === 0 ? (
+                        <p>{otherUser}님과의 대화 시작되었습니다.</p>
+                    ) : (
+                        messages.map((msg, index) => (
+                            <div
+                                key={index} // 메시지 고유 키
+                                onContextMenu={(e) => handleRightClick(e, msg)} // 오른쪽 클릭 이벤트
+                                className={msg.sender === currentUser ? "my-message" : "their-message"}
+                            >
+                                <div>{msg.content}</div>
+                                <small className="timestamp">
+                                    {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
+                                </small>
+                            </div>
+                        ))
+                    )}
+                    <div ref={messagesEndRef}/>
+                    {/* 자동 스크롤 위치 */}
+                </div>
+                <div className="input-area">
+                    <input
+                        type="text"
+                        placeholder="메시지 작성"
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        onKeyPress={handleKeyPress} // Enter 키로 메시지 전송
+                        className="input"
+                    />
+                    <button onClick={sendMessage} className="send-button">
+                        전송
                     </button>
                 </div>
-            </div>
-            <div className="chat-container">
-                {messages.length === 0 ? (
-                    <p>{otherUser}님과의 대화 시작되었습니다.</p>
-                ) : (
-                    messages.map((msg, index) => (
-                        <div
-                            key={index} // 메시지 고유 키
-                            onContextMenu={(e) => handleRightClick(e, msg)} // 오른쪽 클릭 이벤트
-                            className={msg.sender === currentUser ? "my-message" : "their-message"}
-                        >
-                            <div>{msg.content}</div>
-                            <small className="timestamp">
-                                {new Date(msg.timestamp).toLocaleDateString()} {new Date(msg.timestamp).toLocaleTimeString()}
-                            </small>
-                        </div>
-                    ))
-                )}
-                <div ref={messagesEndRef} /> {/* 자동 스크롤 위치 */}
-            </div>
-            <div className="input-area">
-                <input
-                    type="text"
-                    placeholder="메시지 작성"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    onKeyPress={handleKeyPress} // Enter 키로 메시지 전송
-                    className="input"
-                />
-                <button onClick={sendMessage} className="send-button">
-                    전송
-                </button>
-            </div>
 
-            {/* 컨텍스트 메뉴 */}
-            {contextMenu && (
-                <div
-                    className="context-menu"
-                    style={{
-                        position: "absolute",
-                        top: contextMenu.y,
-                        left: contextMenu.x,
-                        backgroundColor: "white",
-                        border: "1px solid #ccc",
-                        boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
-                        zIndex: 1000,
-                    }}
-                >
-                    <button onClick={handleEditMessage}>수정</button>
-                    <button onClick={handleDeleteMessage}>삭제</button>
-                </div>
-            )}
+                {/* 컨텍스트 메뉴 */}
+                {contextMenu && (
+                    <div
+                        className="context-menu"
+                        style={{
+                            position: "absolute",
+                            top: contextMenu.y,
+                            left: contextMenu.x,
+                            backgroundColor: "white",
+                            border: "1px solid #ccc",
+                            boxShadow: "0 2px 5px rgba(0, 0, 0, 0.2)",
+                            zIndex: 1000,
+                        }}
+                    >
+                        <button onClick={handleEditMessage}>수정</button>
+                        <button onClick={handleDeleteMessage}>삭제</button>
+                    </div>
+                )}
+            </div>
         </div>
+
     );
 }
 

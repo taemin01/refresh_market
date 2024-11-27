@@ -1,9 +1,18 @@
 /* 전체 채팅 페이지 스타일 */
+.body {
+    display: flex; /* Flexbox 레이아웃 사용 */
+    justify-content: center; /* 가로 방향 가운데 정렬 */
+    align-items: center; /* 세로 방향 가운데 정렬 */
+}
+
 .chat-page {
     display: flex;
     flex-direction: column;
-    /*height: 100vh;*/
-    width: 40%;
+    /*height: 100vh; !* 뷰포트 높이의 100%로 설정 *!*/
+    width: 100%; /* 너비를 100%로 설정 */
+    max-width: 600px; /* 최대 너비를 600px로 제한 */
+    margin-top: 20px;
+
 }
 
 /* 헤더 영역 - 상품 정보, 이미지와 예약 버튼 포함 */

@@ -37,7 +37,7 @@ function ProductList() {
               image={`http://localhost:8080${encodeURI(product.image)}`} // 서버에서 받은 이미지 경로
               name={product.title} // 서버에서 받은 제품 제목
               // discription={product.discription}
-              price={product.price} // 서버에서 받은 가격
+              price={`${product.price}원`}// 서버에서 받은 가격
             />
           ))
         ) : (

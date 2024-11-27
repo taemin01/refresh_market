@@ -11,59 +11,214 @@
     background-color: #fcfcfc; /* 배경색 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
     position: relative; /* 버튼을 절대 위치로 설정하기 위해 상대 위치 설정 */
+    margin-top : 100px;
+    margin-left : 170px;
+}
 
-  }
-
-  .productdetail-image {
+.productdetail-image {
     position: relative; /* 위치 조정을 위해 상대 위치 설정 */
-    max-width: 1000px; /* 최대 너비 조정 */
-    max-height: 600px; /* 최대 높이 설정 */
-    width: auto; /* 너비를 전체에 맞춤 */
-    height : auto;
+    width: 550px; /* 최대 너비 조정 */
+    height: 500px; /* 최대 높이 설정 */
     object-fit: cover; /* 비율 유지하며 잘라내기 */
     border-radius: 8px; /* 둥근 모서리 */
     left:20px; /* 왼쪽으로 200px 이동 */
     margin-right: 20px; /* 오른쪽 여백 */
-  }
+}
 
 
-  .productdetail-info {
+.productdetail-info {
     display: flex;
     flex-direction: column; /* 세로 방향으로 정렬 */
     /* justify-content: flex-start; 위쪽 정렬 */
     flex : 1;
-  }
+}
 
-  .productdetail-price {
+.productdetail-price {
     position: relative; /* 위치 조정을 위해 상대 위치 설정 */
+    font-family: 'SUITE Variable', sans-serif;
     font-size: 1.5em; /* 가격 텍스트 크기 */
     text-align: right;
     right : 80px;
     color: #ff0000; /* 가격 색상 */
     margin: 10px 0; /* 위아래 여백 */
 
-  }
+}
 
-  .productdetail-description {
+.productdetail-description {
     margin: 10px 0; /* 위아래 여백 */
     flex-direction:  1;
-  }
+}
 
-  .buy-button {
-    background-color: #41d72aab; /* 버튼 배경색 */
-    color: white; /* 버튼 텍스트 색상 */
+
+.productdetail-btn {
+    display: flex; /* 가로 배치 */
+
+    align-items: center; /* 세로 가운데 정렬 */
+
+    position: absolute; /* 부모 컨테이너 기준으로 고정 위치 설정 */
+    bottom: 20px; /* 부모 컨테이너 아래에서 20px 여백 */
+    left: 20px; /* 왼쪽에서 20px 여백 */
+    width: calc(100% - 40px); /* 양쪽 여백을 제외한 너비 */
+}
+
+/* 찜 버튼 (하트 버튼) */
+.heart-button {
+    margin-left: 1100px;
+    margin-bottom:18px;
+    height: 50px;
+    width: 50px;
+    background-color: transparent; /* 투명 배경 */
+    border: none; /* 테두리 제거 */
+    font-size: 40px; /* 하트 크기 */
+    color: #bbb; /* 기본 색상 */
+    cursor: pointer;
+    transition: color 0.3s ease; /* 색 변경 애니메이션 */
+}
+
+.heart-button:hover {
+    color: #ff6f61; /* 호버 시 색상 */
+}
+
+.heart-button.clicked {
+    color: #ff0000; /* 클릭 시 빨간색 */
+}
+
+.buy-button {
+    background-color: #dededeab; /* 버튼 배경색 */
+    font-size: 14px;
+    color: rgb(80, 80, 80); /* 버튼 텍스트 색상 */
     border-color: #d2d2d2; /* 테두리 없음 */
     border-radius: 5px; /* 둥근 모서리 */
     padding: 10px 15px; /* 내부 여백 */
     cursor: pointer; /* 커서 포인터로 변경 */
     bottom: 20px;
-    right : 50px;
+    right : 120px;
     position: absolute;
     height : 40px;
-    width: calc(100% - 800px); /* 버튼 너비 설정 (부모 요소 너비 - 여백) */
+    width: calc(100% - 750px); /* 버튼 너비 설정 (부모 요소 너비 - 여백) */
 
 }
 
-  .buy-button:hover {
-    background-color: #2980b9; /* 호버 시 색상 변경 */
-  }
+.product-detail {
+     display: flex; /* 가로 방향으로 배치 */
+     border: 1px solid #f7f7f7; /* 테두리 */
+     border-radius: 10px; /* 둥근 모서리 */
+     padding: 10px; /* 내부 여백 */
+     max-width: 1800px; /* 최대 너비 설정 */
+     width : 1200px;
+     max-height : 1000px;
+     height : 500px;
+     margin-top: 70px;
+     background-color: #fcfcfc; /* 배경색 */
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 그림자 */
+     position: relative; /* 버튼을 절대 위치로 설정하기 위해 상대 위치 설정 */
+     margin-left : 170px;
+ }
+
+.productdetail-image {
+    position: relative; /* 위치 조정을 위해 상대 위치 설정 */
+    width: 550px; /* 최대 너비 조정 */
+    height: 500px; /* 최대 높이 설정 */
+
+    object-fit: cover; /* 비율 유지하며 잘라내기 */
+    border-radius: 8px; /* 둥근 모서리 */
+    left:20px; /* 왼쪽으로 200px 이동 */
+    margin-right: 20px; /* 오른쪽 여백 */
+}
+
+
+.productdetail-info {
+    display: flex;
+    flex-direction: column; /* 세로 방향으로 정렬 */
+     justify-content: flex-start; /*위쪽 정렬*/
+    flex : 1;
+}
+
+.productdetail-price {
+    position: relative; /* 위치 조정을 위해 상대 위치 설정 */
+    font-family: 'SUITE Variable', sans-serif;
+    font-size: 1.5em; /* 가격 텍스트 크기 */
+    text-align: right;
+    right : 80px;
+    color: #ff0000; /* 가격 색상 */
+    margin: 10px 0; /* 위아래 여백 */
+
+}
+
+.productdetail-description {
+    margin: 10px 0; /* 위아래 여백 */
+    /*flex-direction: 1;*/
+}
+
+
+.productdetail-btn {
+    display: flex; /* 가로 배치 */
+    align-items: center; /* 세로 가운데 정렬 */
+    position: absolute; /* 부모 컨테이너 기준으로 고정 위치 설정 */
+    bottom: 20px; /* 부모 컨테이너 아래에서 20px 여백 */
+    left: 20px; /* 왼쪽에서 20px 여백 */
+    width: calc(100% - 40px); /* 양쪽 여백을 제외한 너비 */
+}
+
+/* 찜 버튼 (하트 버튼) */
+.heart-button {
+    margin-left: 1100px;
+    margin-bottom:18px;
+    height: 50px;
+    width: 50px;
+    background-color: transparent; /* 투명 배경 */
+    border: none; /* 테두리 제거 */
+    font-size: 40px; /* 하트 크기 */
+    color: #bbb; /* 기본 색상 */
+    cursor: pointer;
+    transition: color 0.3s ease; /* 색 변경 애니메이션 */
+}
+
+.heart-button:hover {
+    color: #ff6f61; /* 호버 시 색상 */
+}
+
+.heart-button.clicked {
+    color: #ff0000; /* 클릭 시 빨간색 */
+}
+
+.buy-button {
+    background-color: #dededeab; /* 버튼 배경색 */
+    font-size: 14px;
+    color: rgb(80, 80, 80); /* 버튼 텍스트 색상 */
+    border-color: #d2d2d2; /* 테두리 없음 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 10px 15px; /* 내부 여백 */
+    cursor: pointer; /* 커서 포인터로 변경 */
+    bottom: 20px;
+    right : 120px;
+    position: absolute;
+    height : 40px;
+    width: calc(100% - 750px); /* 버튼 너비 설정 (부모 요소 너비 - 여백) */
+
+}
+
+.buy-button:hover {
+    background-color: #3c3c3c; /* 호버 시 색상 변경 */
+    color : white
+}
+
+.product-delete-button {
+    background-color: #dededeab; /* 버튼 배경색 */
+    font-size: 14px;
+    color: rgb(80, 80, 80); /* 버튼 텍스트 색상 */
+    border-color: #d2d2d2; /* 테두리 없음 */
+    border-radius: 5px; /* 둥근 모서리 */
+    padding: 10px 15px; /* 내부 여백 */
+    cursor: pointer; /* 커서 포인터로 변경 */
+    bottom: 20px;
+    right : 120px;
+    position: absolute;
+    height : 40px;
+    width: calc(100% - 750px); /* 버튼 너비 설정 (부모 요소 너비 - 여백) */
+}
+
+.product-delete-button:hover {
+    background-color: #3c3c3c; /* 호버 시 색상 변경 */
+    color : white
+}
