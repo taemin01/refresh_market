@@ -45,6 +45,10 @@ public class UserService {
         return userRepository.findByKakaoId(kakao_id); // 메서드 이름 수정
     }
 
+    public Optional<User> getUserByEmail(String email) {
+        return userRepository.findByKakaoEmail(email);
+    }
+
     // 새 사용자 생성
     public User createUser(User user) {
         return userRepository.save(user);

@@ -8,28 +8,29 @@ const NewLogin = () => {
     const [location, setLocation] = useState('');
     const [errorUsername, setErrorUsername] = useState('');
     const [errorLocation, setErrorLocation] = useState('');
-    const [kakaoId, setKakaoId] = useState(null);
+    // const [kakaoId, setKakaoId] = useState(null);
+    const [email, setEmail] = useState(null);
     const navigate = useNavigate();
 
     // useEffect로 로컬 스토리지에서 Kakao ID를 가져옵니다.
     useEffect(() => {
-        const storedKakaoId = sessionStorage.getItem('kakaoId');
+        const storedEamil = sessionStorage.getItem('email');
         if (storedKakaoId) {
-            setKakaoId(storedKakaoId);
+            setEmail(storedEamil);
 
             // Kakao ID가 존재하는 경우 백엔드에 요청해 사용자 확인
-            checkExistingUser(storedKakaoId);
+            checkExistingUser(storedEamil);
         } else {
-            console.error('Kakao ID가 없습니다. 다시 로그인해주세요.');
-            navigate('/kakaologin');
+            console.error('email이 없습니다. 다시 로그인해주세요.');
+            navigate('/kakao_email');
         }
     }, [navigate]);
 
     // 이미 존재하는 사용자 확인 함수
-    const checkExistingUser = async (kakaoId) => {
+    const checkExistingUser = async (email) => {
         try {
             const response = await axios.post('http://localhost:8080/users/check-kakao-id', {
-                kakaoId: kakaoId,
+                email: email,
             });
 
             if (response.data.exists) {
@@ -49,9 +50,14 @@ const NewLogin = () => {
         return null;
     };
 
+    // const validateEmail = (email) => {
+         
+    // }
+
     // 회원명 중복 확인 함수
     const checkUsername = async () => {
         const usernameError = validateUsername(username);
+        
         if (usernameError) {
             setErrorUsername(usernameError);
             return;
@@ -103,7 +109,7 @@ const NewLogin = () => {
 
         try {
             const response = await axios.post('http://localhost:8080/users/signup', {
-                kakaoId: kakaoId,
+                email: email,
                 username: username,
                 location: location,
             });

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {redirect, useNavigate} from 'react-router-dom';
 import axios from 'axios';  // axios 라이브러리를 import하여 HTTP 요청에 사용할 준비
 
 const CallbackHandler = () => {
@@ -10,6 +10,7 @@ const CallbackHandler = () => {
     useEffect(() => {
         // 카카오 데이터 API 요청을 보내는 비동기 함수 정의
         const fetchKakaoData = async (code) => {
+            console.log("인가코드 : ", code);
             try {
                 // axios를 사용해 백엔드에 GET 요청을 보냄. 카카오 인증 코드가 URL에 포함되어 전송됨
                 const response = await axios.get(`http://localhost:8080/auth/kakao/callback`, {
@@ -23,17 +24,18 @@ const CallbackHandler = () => {
 
                 // 응답 데이터를 JSON 형태로 파싱하여 변수에 할당
                 const data = response.data;
-                const { kakaoId, nickname, location_x, location_y, message } = data;
+                const { email, nickname, location_x, location_y, message } = data;
 
                 console.log(data)
 
-                // 필수 데이터인 kakaoId가 없을 경우 에러를 발생시켜 예외 처리를 수행
-                if (!kakaoId) {
-                    throw new Error('Kakao ID is not received');
+                // 필수 데이터인 email이 없을 경우 에러를 발생시켜 예외 처리를 수행
+                if (!email) {
+                    throw new Error('email is not received');
+                    // redirect()
                 }
 
                 // 세션 스토리지에 카카오 ID와 로그인 상태 저장
-                sessionStorage.setItem('kakaoId', kakaoId);  // kakaoId 저장
+                // sessionStorage.setItem('kakaoId', kakaoId);  // kakaoId 저장
                 sessionStorage.setItem('isLogin', "true");  // 로그인 상태 저장
                 sessionStorage.setItem('location_x', location_x);  // 사용자의 위치 정보 (x 좌표) 저장
                 sessionStorage.setItem('location_y', location_y);  // 사용자의 위치 정보 (y 좌표) 저장

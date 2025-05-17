@@ -92,32 +92,22 @@ public class UserController {
     // 회원 가입 또는 정보 업데이트 처리
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signUp(@RequestBody Map<String, String> request) {
-        Long kakaoId;
-        try {
-            kakaoId = Long.parseLong(request.get("kakaoId"));
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid kakaoId"));
-        }
+        String email = request.getOrDefault("email", ""); // 이메일이 없으면 빈 문자열로 설정
+        String userName = request.getOrDefault("username", ""); // 사용자 이름이 없으면 빈 문자열로 설정
+        String locationStr = request.getOrDefault("location", ""); // 위치 정보가 없으면 빈 문자열로 설정
 
-        String userName = request.get("username");
-        String locationStr = request.get("location");
         if (locationStr == null || !locationStr.contains(", ")) {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid location format"));
         }
 
         String[] location = locationStr.split(", ");
-        float locationX;
-        float locationY;
-        try {
-            locationX = Float.parseFloat(location[0]);
-            locationY = Float.parseFloat(location[1]);
-        } catch (NumberFormatException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", "Invalid location coordinates"));
-        }
+        float locationX = location.length > 0 ? Float.parseFloat(location[0]) : 0.0f; // 기본값 설정
+        float locationY = location.length > 1 ? Float.parseFloat(location[1]) : 0.0f; // 기본값 설정
 
-        Optional<User> existingUser = userService.getUserByKakaoId(kakaoId);
+        Optional<User> existingUser = userService.getUserByEmail(email);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
+            user.setKakaoEmail(email);
             user.setUserName(userName);
             user.setLocation_x(locationX);
             user.setLocation_y(locationY);
@@ -125,7 +115,7 @@ public class UserController {
             return ResponseEntity.ok(Map.of("message", "User information updated successfully"));
         } else {
             User newUser = new User();
-            newUser.setKakaoId(kakaoId);
+            newUser.setKakaoEmail(email);
             newUser.setUserName(userName);
             newUser.setLocation_x(locationX);
             newUser.setLocation_y(locationY);

@@ -17,6 +17,9 @@ public class User {
     @Column(nullable = false, name="user_id")
     private Integer userId;
 
+    @Column(unique = true)
+    private String kakaoEmail;
+
     @Column(nullable = false, name="user_name")  // name 속성으로 컬럼명을 명시적으로 지정
     private String userName;
 
@@ -38,12 +41,4 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Product> products;
-
-
-    //지운 column
-    //@Column(nullable = false)
-    //private String password;
-
-    //@Column(nullable = false)
-    //private String email;
 }
