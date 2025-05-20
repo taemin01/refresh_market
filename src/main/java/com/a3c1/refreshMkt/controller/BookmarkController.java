@@ -10,6 +10,8 @@ import com.a3c1.refreshMkt.repository.ProductRepository;
 import com.a3c1.refreshMkt.repository.UserRepository;
 import com.a3c1.refreshMkt.service.BookmarkService;
 import com.a3c1.refreshMkt.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/bookmark")
 public class BookmarkController {
+    private static final Logger logger = LoggerFactory.getLogger(BookmarkController.class);
 
     @Autowired
     private BookmarkService bookmarkService;
@@ -40,13 +43,17 @@ public class BookmarkController {
 
     // 북마크 추가/취소 API
     @PostMapping("/zzim/{productId}")
-    public ResponseEntity<BookmarkResponse> toggleBookmark(@PathVariable Integer productId, @RequestBody BookmarkRequest bookmarkRequest) {
+    public ResponseEntity<BookmarkResponse> toggleBookmark(
+            @PathVariable Integer productId,
+            @RequestBody BookmarkRequest bookmarkRequest) {
         try {
+            logger.info("Toggling bookmark for product {} by user {}", productId, bookmarkRequest.getKakaoId());
             Bookmark bookmark = bookmarkService.toggleBookmark(bookmarkRequest);
             BookmarkResponse response = new BookmarkResponse(bookmark);
+            logger.info("Bookmark toggled successfully. New status: {}", bookmark.getStatus());
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error toggling bookmark for product {}: {}", productId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -54,14 +61,20 @@ public class BookmarkController {
     // 사용자별 북마크 목록 조회 API
     @GetMapping("/user/{kakaoId}")
     public ResponseEntity<List<BookmarkResponse>> getUserBookmarks(@PathVariable Long kakaoId) {
-        Optional<User> existingUser = userService.getUserByKakaoId(kakaoId);
-
         try {
+            logger.info("Fetching bookmarks for user {}", kakaoId);
+            Optional<User> existingUser = userService.getUserByKakaoId(kakaoId);
+            if (existingUser.isEmpty()) {
+                logger.warn("User not found with kakaoId: {}", kakaoId);
+                return ResponseEntity.notFound().build();
+            }
+
             List<Bookmark> bookmarks = bookmarkService.findByUserId(existingUser.get().getUserId());
             List<BookmarkResponse> response = bookmarks.stream()
-                            .map(BookmarkResponse::new)
-                            .collect(Collectors.toList());
-            System.out.println("북마크 : " + bookmarks.size());
+                    .map(BookmarkResponse::new)
+                    .collect(Collectors.toList());
+
+            logger.info("Found {} bookmarks for user {}", bookmarks.size(), kakaoId);
 
             if (response.isEmpty()) {
                 return ResponseEntity.noContent().build();
@@ -69,7 +82,7 @@ public class BookmarkController {
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error fetching bookmarks for user {}: {}", kakaoId, e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
@@ -80,20 +93,24 @@ public class BookmarkController {
             @PathVariable Integer productId,
             @RequestParam Long kakaoId) {
         try {
+            logger.info("Checking bookmark status for product {} and user {}", productId, kakaoId);
             User user = userRepository.findByKakaoId(kakaoId)
-                    .orElseThrow(() -> new RuntimeException("User not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with kakaoId: " + kakaoId));
 
             Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new RuntimeException("Product not found"));
+                    .orElseThrow(() -> new IllegalArgumentException("Product not found with id: " + productId));
 
-            // 북마크 상태 확인
             boolean isBookmarked = bookmarkRepository.findByUserAndProduct(user, product)
                     .map(Bookmark::getStatus)
                     .orElse(false);
 
+            logger.info("Bookmark status for product {} and user {}: {}", productId, kakaoId, isBookmarked);
             return ResponseEntity.ok(isBookmarked);
+        } catch (IllegalArgumentException e) {
+            logger.warn("Invalid request: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(false);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error checking bookmark status: {}", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(false);
         }
     }

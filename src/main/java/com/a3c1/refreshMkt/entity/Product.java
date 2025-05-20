@@ -38,11 +38,12 @@ public class Product {
     @Column(nullable = false)
     private String description;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private char status; // a: 판매중, b: 예약중, c: 판매완료
+    private ProductStatus status = ProductStatus.AVAILABLE;
 
     @Column(nullable = false)
-    private String image;
+    private String image = "default.jpg";
 
     @CreationTimestamp // 엔티티가 처음 생성될 때 자동으로 현재 시간 입력
     @Column(nullable = false, updatable = false)
@@ -54,14 +55,20 @@ public class Product {
 
     //status
     public boolean isAvailable() {
-        return status == 'a'; // 판매중인 경우
+        return status == ProductStatus.AVAILABLE;
     }
 
     public boolean isReserved() {
-        return status == 'b'; // 예약중인 경우
+        return status == ProductStatus.RESERVED;
     }
 
     public boolean isSold() {
-        return status == 'c'; // 판매완료인 경우
+        return status == ProductStatus.SOLD;
+    }
+
+    public enum ProductStatus {
+        AVAILABLE,  // 판매중
+        RESERVED,   // 예약중
+        SOLD        // 판매완료
     }
 }

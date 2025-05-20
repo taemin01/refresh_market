@@ -92,30 +92,29 @@ public class UserController {
     // 회원 가입 또는 정보 업데이트 처리
     @PostMapping("/signup")
     public ResponseEntity<Map<String, String>> signUp(@RequestBody Map<String, String> request) {
-        String email = request.getOrDefault("email", ""); // 이메일이 없으면 빈 문자열로 설정
-        String userName = request.getOrDefault("username", ""); // 사용자 이름이 없으면 빈 문자열로 설정
-        String locationStr = request.getOrDefault("location", ""); // 위치 정보가 없으면 빈 문자열로 설정
+        String userName = request.getOrDefault("username", "");
+        String locationStr = request.getOrDefault("location", "");
+        Long kakaoId = Long.parseLong(request.getOrDefault("kakaoId", "0"));
 
         if (locationStr == null || !locationStr.contains(", ")) {
             return ResponseEntity.badRequest().body(Map.of("error", "Invalid location format"));
         }
 
         String[] location = locationStr.split(", ");
-        float locationX = location.length > 0 ? Float.parseFloat(location[0]) : 0.0f; // 기본값 설정
-        float locationY = location.length > 1 ? Float.parseFloat(location[1]) : 0.0f; // 기본값 설정
+        float locationX = location.length > 0 ? Float.parseFloat(location[0]) : 0.0f;
+        float locationY = location.length > 1 ? Float.parseFloat(location[1]) : 0.0f;
 
-        Optional<User> existingUser = userService.getUserByEmail(email);
+        Optional<User> existingUser = userService.getUserByKakaoId(kakaoId);
         if (existingUser.isPresent()) {
             User user = existingUser.get();
-            user.setKakaoEmail(email);
             user.setUserName(userName);
             user.setLocation_x(locationX);
             user.setLocation_y(locationY);
-            userService.updateUser(user.getUserId(), user);
+            userService.save(user);
             return ResponseEntity.ok(Map.of("message", "User information updated successfully"));
         } else {
             User newUser = new User();
-            newUser.setKakaoEmail(email);
+            newUser.setKakaoId(kakaoId);
             newUser.setUserName(userName);
             newUser.setLocation_x(locationX);
             newUser.setLocation_y(locationY);
@@ -124,5 +123,46 @@ public class UserController {
         }
     }
 
+    /**
+     * 현재 로그인한 사용자의 존재 여부를 확인하는 API
+     * HttpOnly 쿠키에서 kakaoId를 읽어 처리
+     */
+    @GetMapping("/check-user")
+    public ResponseEntity<Map<String, Boolean>> checkUser(@CookieValue(name = "kakaoId", required = false) String kakaoId) {
+        if (kakaoId == null) {
+            return ResponseEntity.status(401).body(Map.of("exists", false));
+        }
 
+        Optional<User> user = userService.getUserByKakaoId(Long.parseLong(kakaoId));
+
+        return ResponseEntity.ok(Map.of("exists", user.isPresent() && user.get().getUserName().isEmpty()));
+    }
+
+    /**
+     * 사용자 정보 업데이트 API
+     * 카카오 로그인 후 사용자 정보(활동명, 위치)를 업데이트
+     */
+    @PutMapping("/update")
+    public ResponseEntity<?> updateUserInfo(@CookieValue(name = "kakaoId") String kakaoId, @RequestBody Map<String, Object> request) {
+        try {
+            String username = (String) request.get("username");
+            double locationX = Double.parseDouble(request.get("location_x").toString());
+            double locationY = Double.parseDouble(request.get("location_y").toString());
+
+            Optional<User> userOpt = userService.getUserByKakaoId(Long.parseLong(kakaoId));
+            if (!userOpt.isPresent()) {
+                return ResponseEntity.status(404).body(Map.of("error", "User not found"));
+            }
+
+            User user = userOpt.get();
+            user.setUserName(username);
+            user.setLocation_x(locationX);
+            user.setLocation_y(locationY);
+
+            userService.save(user);
+            return ResponseEntity.ok(Map.of("message", "User information updated successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body(Map.of("error", "Failed to update user information"));
+        }
+    }
 }

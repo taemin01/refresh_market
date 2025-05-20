@@ -20,18 +20,18 @@ const MyProfile = ({ setIsLogin }) => {
     useEffect(() => {
         const userProductList = async () => {
             try {
-                const response = await axios.get("http://localhost:8080/product/post/user_list",
-                    {params: {username: name}},
-                    {withCredentials: true})
+                const response = await axios.get("http://localhost:8080/product/post/user_list", {
+                    params: { username: sessionStorage.getItem('nickname') },
+                    withCredentials: true
+                });
 
                 setProducts(response.data);
             } catch (error) {
                 console.log("error : ", error);
             }
-
-        }
+        };
+        
         userProductList();
-        convertCoordsToAddress();
         convertCoordsToAddress();
     }, []);
 
@@ -60,14 +60,20 @@ const MyProfile = ({ setIsLogin }) => {
         const newUsername = prompt('새로운 회원명을 입력해주세요:', username);
         if (newUsername) {
             try {
-
                 // 백엔드로 중복 체크 요청
-                const response = await axios.post('http://localhost:8080/users/check-username', { username: newUsername });
+                const response = await axios.post('http://localhost:8080/users/check-username', 
+                    { username: newUsername },
+                    { withCredentials: true }
+                );
+                
                 if (response.data.exists) {
                     alert('이미 사용 중인 회원명입니다. 다른 이름을 입력해주세요.');
                 } else {
                     // 중복되지 않으면 데이터베이스 업데이트 요청
-                    await axios.put('http://localhost:8080/users/update-username', { username: newUsername, kakaoId: kakaoId });
+                    await axios.put('http://localhost:8080/users/update-username', 
+                        { username: newUsername },
+                        { withCredentials: true }
+                    );
                     setUsername(newUsername); // 상태 업데이트
                     sessionStorage.setItem('nickname', newUsername);
                     alert('회원명이 성공적으로 변경되었습니다.');
@@ -92,31 +98,32 @@ const MyProfile = ({ setIsLogin }) => {
             try {
                 const response = await axios.get('https://dapi.kakao.com/v2/local/search/address.json', {
                     params: { query: newLocation },
-                    headers: { Authorization: `KakaoAK 07b9f4866bc45f61d932f827f82136c9` }, // REST API 키 설정
+                    headers: { Authorization: `KakaoAK 07b9f4866bc45f61d932f827f82136c9` }
                 });
 
-                // API 응답 데이터가 있는지 확인
                 if (response.data.documents.length === 0) {
                     alert('올바른 주소를 입력해주세요.');
                     return;
                 }
 
-                const roadAddress = response.data.documents[0].road_address; // 도로명 주소 객체
-                const addressName = roadAddress ? roadAddress.address_name : response.data.documents[0].address.address_name; // 도로명 주소가 없으면 기본 주소 사용
-                console.log("디버깅 : ", addressName)
+                const roadAddress = response.data.documents[0].road_address;
+                const addressName = roadAddress ? roadAddress.address_name : response.data.documents[0].address.address_name;
+                console.log("디버깅 : ", addressName);
 
-                const y = roadAddress ? roadAddress.x : response.data.documents[0].x; // X 좌표
-                const x = roadAddress ? roadAddress.y : response.data.documents[0].y; // Y 좌표
+                const y = roadAddress ? roadAddress.x : response.data.documents[0].x;
+                const x = roadAddress ? roadAddress.y : response.data.documents[0].y;
 
-                setLocation(addressName); // React 상태 업데이트
+                setLocation(addressName);
                 console.log("응답 데이터 출력:", addressName, x, y);
 
                 // 백엔드로 좌표 및 주소 업데이트
-                await axios.put('http://localhost:8080/users/update-location', {
-                    location_x: x,
-                    location_y: y,
-                    kakaoId: kakaoId,
-                });
+                await axios.put('http://localhost:8080/users/update-location', 
+                    {
+                        location_x: x,
+                        location_y: y
+                    },
+                    { withCredentials: true }
+                );
 
                 // 세션 스토리지 업데이트
                 sessionStorage.setItem('location_x', x);
@@ -131,11 +138,24 @@ const MyProfile = ({ setIsLogin }) => {
         }
     };
 
-    const handleLogout = () => {
-        sessionStorage.setItem('isLogin', 'false');
-        setIsLogin(false);
-        navigate('/');
-        window.location.reload();
+    const handleLogout = async () => {
+        try {
+            // 서버에 로그아웃 요청을 보내 HttpOnly 쿠키 삭제
+            await axios.post('http://localhost:8080/auth/logout', {}, {
+                withCredentials: true
+            });
+            
+            // 세션 스토리지 클리어
+            sessionStorage.clear();
+            navigate('/');
+            window.location.reload();
+        } catch (error) {
+            console.error('로그아웃 처리 중 오류가 발생했습니다:', error);
+            // 에러가 발생하더라도 클라이언트 측 데이터는 삭제
+            sessionStorage.clear();
+            navigate('/');
+            window.location.reload();
+        }
     };
 
     const handleClick = () => {

@@ -3,71 +3,62 @@ import { useNavigate } from 'react-router-dom';
 import '../css/NewLogin.css'
 import axios from 'axios';
 
+/**
+ * 신규 사용자 정보 입력 컴포넌트
+ * 카카오 로그인 후 추가 정보(활동명, 위치) 입력을 처리
+ */
 const NewLogin = () => {
     const [username, setUsername] = useState('');
     const [location, setLocation] = useState('');
     const [errorUsername, setErrorUsername] = useState('');
     const [errorLocation, setErrorLocation] = useState('');
-    // const [kakaoId, setKakaoId] = useState(null);
-    const [email, setEmail] = useState(null);
     const navigate = useNavigate();
 
-    // useEffect로 로컬 스토리지에서 Kakao ID를 가져옵니다.
     useEffect(() => {
-        const storedEamil = sessionStorage.getItem('email');
-        if (storedKakaoId) {
-            setEmail(storedEamil);
-
-            // Kakao ID가 존재하는 경우 백엔드에 요청해 사용자 확인
-            checkExistingUser(storedEamil);
-        } else {
-            console.error('email이 없습니다. 다시 로그인해주세요.');
-            navigate('/kakao_email');
-        }
+        checkExistingUser();
     }, [navigate]);
 
     // 이미 존재하는 사용자 확인 함수
-    const checkExistingUser = async (email) => {
+    const checkExistingUser = async () => {
         try {
-            const response = await axios.post('http://localhost:8080/users/check-kakao-id', {
-                email: email,
+            const response = await axios.get('http://localhost:8080/users/check-user', {
+                withCredentials: true // 쿠키를 포함하여 요청 전송
             });
+
+            console.log(response);
 
             if (response.data.exists) {
                 // 이미 존재하는 사용자일 경우 홈 페이지로 리다이렉트
                 navigate('/');
             }
         } catch (error) {
-            console.error('Error checking Kakao ID:', error);
+            console.error('Error checking user:', error);
+            navigate('/login'); // 오류 발생시 로그인 페이지로 리다이렉트
         }
     };
 
     // 회원명 유효성 검사 함수
     const validateUsername = (name) => {
+        if (!name) return '회원명을 입력해주세요.';
         if (name.length > 10) return '회원명은 10자 이하이어야 합니다.';
         const specialCharRegex = /^[!@#$%^&*()_+={}\[\]:;"'<>,.?~-]*$/;
         if (specialCharRegex.test(name)) return '회원명은 특수문자로만 이루어질 수 없습니다.';
         return null;
     };
 
-    // const validateEmail = (email) => {
-         
-    // }
-
     // 회원명 중복 확인 함수
     const checkUsername = async () => {
         const usernameError = validateUsername(username);
-        
         if (usernameError) {
             setErrorUsername(usernameError);
             return;
-        } else {
-            sessionStorage.setItem('nickname', username);
         }
 
         try {
             const response = await axios.post('http://localhost:8080/users/check-username', {
-                username: username,
+                username: username
+            }, {
+                withCredentials: true // 쿠키를 포함하여 요청 전송
             });
 
             setErrorUsername(response.data.exists ? '이미 사용 중인 회원명입니다.' : '사용 가능한 회원명입니다.');
@@ -83,9 +74,6 @@ const NewLogin = () => {
             navigator.geolocation.getCurrentPosition(
                 (position) => {
                     const currentLocation = `${position.coords.latitude}, ${position.coords.longitude}`;
-                    console.log(position.coords.latitude, position.coords.longitude);
-                    sessionStorage.setItem('location_x', position.coords.latitude);
-                    sessionStorage.setItem('location_y', position.coords.longitude);
                     setLocation(currentLocation);
                     setErrorLocation('');
                 },
@@ -101,25 +89,27 @@ const NewLogin = () => {
 
     // 회원가입 처리 함수
     const handleSignUp = async () => {
-        if (!username || !location) {
-            setErrorUsername(username ? '' : '회원명을 입력해주세요.');
-            setErrorLocation(location ? '' : '위치 인증이 필요합니다.');
+        const usernameError = validateUsername(username);
+        if (usernameError || !location) {
+            setErrorUsername(usernameError);
+            setErrorLocation(!location ? '위치 인증이 필요합니다.' : '');
             return;
         }
 
         try {
-            const response = await axios.post('http://localhost:8080/users/signup', {
-                email: email,
+            const [lat, lng] = location.split(', ');
+            await axios.put('http://localhost:8080/users/update', {
                 username: username,
-                location: location,
+                location_x: parseFloat(lat),
+                location_y: parseFloat(lng)
+            }, {
+                withCredentials: true // 쿠키를 포함하여 요청 전송
             });
 
-            console.log('회원가입 성공:', response.data);
-            navigate('/'); // 회원가입 성공 시 홈 페이지로 이동
-            setTimeout(() => window.location.reload(), 0);
+            navigate('/');
         } catch (error) {
             console.error('Error:', error);
-            setErrorUsername('회원가입 중 오류가 발생했습니다.');
+            setErrorUsername('회원정보 업데이트 중 오류가 발생했습니다.');
         }
     };
 
@@ -152,8 +142,6 @@ const NewLogin = () => {
                 </button>
             </div>
         </div>
-
-
     );
 };
 

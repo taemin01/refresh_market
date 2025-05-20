@@ -24,7 +24,6 @@ public class CategoryController {
             @RequestParam("category_id") Integer categoryId,
             @RequestParam("price") Integer price,
             @RequestParam("description") String description,
-            @RequestParam("status") char status,
             @RequestParam(value = "image", required = false) MultipartFile image) {
 
         // categoryId로 Category 조회
@@ -36,14 +35,13 @@ public class CategoryController {
         product.setTitle(title);
         product.setPrice(price);
         product.setDescription(description);
-        product.setStatus(status);
-        product.setCategory(category); // Category 설정
+        product.setStatus(Product.ProductStatus.AVAILABLE);
+        product.setCategory(category);
 
-        // 이미지 처리 로직 추가 (필요 시)
+        // 이미지 처리 로직
         if (image != null && !image.isEmpty()) {
-            // 이미지 저장 로직 구현 (예: 이미지 경로 설정)
-            // 예: String imagePath = saveImage(image);
-            // product.setImage(imagePath);
+            String imagePath = registService.saveImage(image);
+            product.setImage(imagePath);
         }
 
         return registService.save(product);

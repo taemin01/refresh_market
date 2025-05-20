@@ -5,8 +5,9 @@ import com.a3c1.refreshMkt.entity.Product;
 import com.a3c1.refreshMkt.entity.User;
 import com.a3c1.refreshMkt.repository.ProductRepository;
 import com.a3c1.refreshMkt.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,15 +15,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
+    private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
 
     private final ProductRepository productRepository;
-
     private final UserRepository userRepository;
 
     public ProductService(UserRepository userRepository, ProductRepository productRepository) {
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-
     }
 
     // Integer 타입으로 productId를 받도록 수정
@@ -31,23 +31,30 @@ public class ProductService {
     }
 
     public List<ProductResponse> getProductByUserNickname(String nickName) {
-        User user = userRepository.findByUserName(nickName)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+        try {
+            User user = userRepository.findByUserName(nickName)
+                    .orElseThrow(() -> new IllegalArgumentException("User not found with nickname: " + nickName));
 
-        List<Product> products = productRepository.findByUser_UserId(user.getUserId());
+            List<Product> products = productRepository.findByUser_UserId(user.getUserId());
+            logger.info("Found {} products for user {}", products.size(), nickName);
 
-        //반환 위해 DTO 변환
-        return products.stream()
-                .map(product -> new ProductResponse(
-                        product.getProduct_id(),
-                        product.getTitle(),
-                        product.getPrice(),
-                        product.getImage()
-                )).collect(Collectors.toList());
+            return products.stream()
+                    .map(ProductResponse::new)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            logger.error("Error getting products for user {}: {}", nickName, e.getMessage());
+            throw e;
+        }
     }
 
     public Product addProduct(Product product) {
-        return productRepository.save(product);
+        try {
+            logger.info("Adding new product: {}", product.getTitle());
+            return productRepository.save(product);
+        } catch (Exception e) {
+            logger.error("Error adding product: {}", e.getMessage());
+            throw e;
+        }
     }
 
     // 상품 ID로 상품 정보 가져오기

@@ -21,18 +21,18 @@ public class Bookmark {
     @ManyToOne(fetch = FetchType.LAZY)
 //    @JsonIgnore
     @JoinColumn(name = "user_id", nullable = false)
-//    @OnDelete(action = OnDeleteAction.CASCADE)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
 
     //여러 북마크를 한 물건이 가질 수 있음??
 //    @JsonIgnore
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Product product;
 
     @Column(nullable = false)
-    private boolean status;
+    private Boolean status = true;
 
     public static Bookmark createBookmark(User user, Product product) {
         return new Bookmark(
@@ -43,8 +43,12 @@ public class Bookmark {
         );
     }
 
-    public void deleteBookmark(Product product) {
+    public void deleteBookmark() {
         this.status = false;
+    }
+
+    public void restoreBookmark() {
+        this.status = true;
     }
 
     // Getter 및 Setter
